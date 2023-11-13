@@ -4,7 +4,7 @@ import os
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = "10.230.93.136"
+HOST = "26.75.111.47"
 PORT = 43432
 
 DISCONECT = "DISCONECT"
@@ -42,7 +42,11 @@ def send_file():
             data = file.read(1024)
             if not (data):
                 break
-            sender.sendall(data)
+            data_length = len(data)
+            data_length = str(data_length).encode(FORMAT)
+            data_length += b' ' * (HEADER - len(data_length))
+            sender.send(data_length)
+            sender.send(data)
             c+=len(data)
     print("Transfer Complete")
     

@@ -6,7 +6,7 @@ FORMAT = 'utf-8'
 
 
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 5554
+PORT = 43432
 
 receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 receiver.bind((HOST,PORT))
@@ -14,6 +14,7 @@ receiver.bind((HOST,PORT))
 
 DISCONECT = "DISCONECT"
 TRANSFER = "TRANSFER FILE"
+
 
 
 def recv_FORMAT(conn):
@@ -25,10 +26,10 @@ def recv_FORMAT(conn):
 
 def handle_sender(conn,addr):
     print (f"NEW CONNECTION {addr} connected.")
-    
     connected = True
     while connected: 
         CODE = recv_FORMAT(conn)
+        #print(f"{CODE}")
         if CODE==TRANSFER:
             file_name = recv_FORMAT(conn)
             print(f"{file_name}")
@@ -37,18 +38,22 @@ def handle_sender(conn,addr):
             
             with open("./recive/"+file_name,"wb") as file:
                 c=0
-                
-                while c <= int(file_size):
-                    data = conn.recv(1024)
+                print(f"{CODE}")
+                while c < int(file_size):
+                    msg_length = conn.recv(HEADER).decode(FORMAT)
+                    msg_length = int(msg_length)
+                    data = conn.recv(msg_length)
                     if not (data):
                         break
-                    file.write(data)
+                    print(f"{data}")
+                    file.write(data) 
                     c+=len(data)
+                print(f"{c}")
                 print("Transfer Complete")
-            
         elif CODE == DISCONECT:
             print(f"[{addr}] DISCONECTED")
             connected=False
+        
     conn.close()
                   
 def start():
