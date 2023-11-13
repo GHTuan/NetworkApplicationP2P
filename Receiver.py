@@ -35,7 +35,6 @@ def handle_sender(conn,addr):
             print(f"{file_name}")
             file_size = recv_FORMAT(conn)
             print(f"{file_size}")
-            
             with open("./recive/"+file_name,"wb") as file:
                 c=0
                 print(f"{CODE}")
@@ -46,9 +45,7 @@ def handle_sender(conn,addr):
                     if not (data):
                         break
                     print(f"{data}")
-                    file.write(data) 
                     c+=len(data)
-                print(f"{c}")
                 print("Transfer Complete")
         elif CODE == DISCONECT:
             print(f"[{addr}] DISCONECTED")
