@@ -4,16 +4,16 @@ import os
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = "26.75.111.47"
-PORT = 5554
+HOST = "10.230.93.136"
+PORT = 43432
 
 DISCONECT = "DISCONECT"
 TRANSFER = "TRANSFER FILE"
 
 
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((HOST,PORT))
+sender = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sender.connect((HOST,PORT))
 
 
 def send_FORMAT(msg):
@@ -21,10 +21,9 @@ def send_FORMAT(msg):
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
-    client.send(send_length)
-    client.send(message)
+    sender.send(send_length)
+    sender.send(message)
     
-
 def send_file():
     
     file_name = input("File Name: ")
@@ -38,20 +37,21 @@ def send_file():
     
     with open("./send/"+file_name,"rb") as file:
         c=0
+        
         while c <= file_size:
             data = file.read(1024)
             if not (data):
                 break
-            client.sendall(data)
+            sender.sendall(data)
             c+=len(data)
     print("Transfer Complete")
     
     
 def disconect():
-    client.send(DISCONECT.encode())
+    send_FORMAT(DISCONECT)
     print(f"DISCONECT")
-    client.close()
+    sender.close()
     
     
 send_file()
-#disconect()
+disconect()

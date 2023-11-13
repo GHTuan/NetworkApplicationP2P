@@ -8,8 +8,8 @@ FORMAT = 'utf-8'
 HOST = socket.gethostbyname(socket.gethostname())
 PORT = 5554
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((HOST,PORT))
+receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+receiver.bind((HOST,PORT))
 
 
 DISCONECT = "DISCONECT"
@@ -21,11 +21,11 @@ def recv_FORMAT(conn):
     if msg_length:
         msg_length = int(msg_length)
         return conn.recv(msg_length).decode(FORMAT)
-    pass
     
 
-def handle_client(conn,addr):
+def handle_sender(conn,addr):
     print (f"NEW CONNECTION {addr} connected.")
+    
     connected = True
     while connected: 
         CODE = recv_FORMAT(conn)
@@ -34,8 +34,10 @@ def handle_client(conn,addr):
             print(f"{file_name}")
             file_size = recv_FORMAT(conn)
             print(f"{file_size}")
+            
             with open("./recive/"+file_name,"wb") as file:
                 c=0
+                
                 while c <= int(file_size):
                     data = conn.recv(1024)
                     if not (data):
@@ -43,22 +45,22 @@ def handle_client(conn,addr):
                     file.write(data)
                     c+=len(data)
                 print("Transfer Complete")
+            
         elif CODE == DISCONECT:
             print(f"[{addr}] DISCONECTED")
             connected=False
     conn.close()
                   
 def start():
-    server.listen()
+    receiver.listen()
     print(f"Listening at address {HOST}")
     while True:
-        conn, addr = server.accept()
-        thread = threading.Thread(target=handle_client, args=(conn,addr))
+        conn, addr = receiver.accept()
+        thread = threading.Thread(target=handle_sender, args=(conn,addr))
         thread.start()
         print(f"[ACTIVE CONNECTONS] {threading.active_count() - 1}")
 
-
-print("Starting the server")
+print("Starting the receiver")
 start()
 
 
