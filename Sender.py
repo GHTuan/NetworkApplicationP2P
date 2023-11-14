@@ -12,9 +12,9 @@ TRANSFER = "TRANSFER FILE"
 
 
 
+
 sender = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sender.connect((HOST,PORT))
-
 
 def send_FORMAT(msg):
     message = msg.encode(FORMAT)
@@ -49,7 +49,6 @@ def send_file():
             sender.send(data)
             c+=len(data)
     print("Transfer Complete")
-    
     
 def disconect():
     send_FORMAT(DISCONECT)
