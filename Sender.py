@@ -4,7 +4,7 @@ import os
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = "26.75.111.47"
+HOST = socket.gethostbyname(socket.gethostname())
 PORT = 43432
 
 DISCONECT = "DISCONECT"

@@ -12,7 +12,7 @@ receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 receiver.bind((HOST,PORT))
 
 
-DISCONECT = "DISCONECT"
+DISCONNECT = "DISCONNECT"
 TRANSFER = "TRANSFER FILE"
 
 
@@ -47,8 +47,8 @@ def handle_sender(conn,addr):
                     print(f"{data}")
                     c+=len(data)
                 print("Transfer Complete")
-        elif CODE == DISCONECT:
-            print(f"[{addr}] DISCONECTED")
+        elif CODE == DISCONNECT:
+            print(f"[{addr}] DISCONNECTED")
             connected=False
         
     conn.close()
