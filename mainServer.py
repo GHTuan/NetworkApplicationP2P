@@ -17,6 +17,7 @@ TRANSFER = "TRANSFER FILE"
 REQUEST = "REQUEST"
 DISCORVER = "DISCORVER"
 ERROR = "ERROR"
+SHARE = "SHARE"
 
 def recv_FORMAT(conn):
     msg_length = conn.recv(HEADER).decode(FORMAT)
@@ -103,13 +104,13 @@ def handle_connection(conn,addr):
             # receive the file_name with the addr of that file
             # add to the REQUEST_QUEUE (request_addr,receive_addr,file_name)
             
+            
             pass
         elif CODE == DISCORVER:
             # DISCORVER
             # send to this connection the list if active files
             
             
-
             pass
         else:
             # if notthing else to do it will check for request

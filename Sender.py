@@ -30,9 +30,7 @@ def send_file():
     file_size = os.path.getsize("./send/"+file_name)
     
     send_FORMAT(TRANSFER)
-    
     send_FORMAT(file_name)
-    
     send_FORMAT(str(file_size))
     
     with open("./send/"+file_name,"rb") as file:

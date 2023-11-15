@@ -10,24 +10,37 @@ import threading
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = "26.75.111.47"  # change to your Local IP
+SERVER_HOST = "20.20.20.20"
+SERVER_PORT = 43432
+
+HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
 PORT = 43432
 
 DISCONNECT = "DISCONNECT"
 TRANSFER = "TRANSFER FILE"
 
+def send_FORMAT(conn,msg):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    conn.send(send_length)
+    conn.send(message)
+    
+    
+def recv_FORMAT(conn):
+    msg_length = conn.recv(HEADER).decode(FORMAT)
+    if msg_length:
+        msg_length = int(msg_length)
+        return conn.recv(msg_length).decode(FORMAT)
+
+
 
 def connectServer():
     peer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    peer.connect((HOST, PORT)) # of server
+    peer.connect((SERVER_HOST, SERVER_PORT)) # of server
 
-    def send_FORMAT(msg):
-        message = msg.encode(FORMAT)
-        msg_length = len(message)
-        send_length = str(msg_length).encode(FORMAT)
-        send_length += b' ' * (HEADER - len(send_length))
-        peer.send(send_length)
-        peer.send(message)
+
 
     def disconnect():
         send_FORMAT(DISCONNECT)
@@ -63,18 +76,11 @@ def createServer():
     conn, addr = server.accept()
     print('Connected to {}:{}'.format(addr[0], addr[1]))
 
-    def recv_FORMAT(conn):
-        msg_length = conn.recv(HEADER).decode(FORMAT)
-        if msg_length:
-            msg_length = int(msg_length)
-            return conn.recv(msg_length).decode(FORMAT)
-
     #def handle_sender(conn, addr):
     print(f"NEW CONNECTION {addr} connected.")
     connected = True
     while connected:
         CODE = recv_FORMAT(conn)
-
         if CODE == TRANSFER:
             file_name = recv_FORMAT(conn)
             file_size = recv_FORMAT(conn)
