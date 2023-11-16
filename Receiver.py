@@ -6,7 +6,7 @@ FORMAT = 'utf-8'
 
 
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 43432
+PORT = 12345
 
 receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 receiver.bind((HOST,PORT))
