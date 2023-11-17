@@ -6,10 +6,18 @@
 
 # Note that the address are in tuple format: (string,number)
 
+# IMPORTANT 
+# You can't send tuple so the work around will be sending a json obj
+# Implement the serialize and deserialize first
+
+ 
+
 
 import socket
 import os
 import threading
+
+import json
 
 HEADER = 64
 FORMAT = 'utf-8'
@@ -26,6 +34,38 @@ REQUEST = "REQUEST"
 DISCORVER = "DISCORVER"
 ERROR = "ERROR"
 SHARE = "SHARE"
+
+
+
+def serialize(data):
+    # Input data is in tuple format
+    # Convert it into a json objs and return it
+    
+    #TODO
+    
+    pass
+
+
+
+
+def deserialize(data):
+    # Input data is in json objs
+    # Convert it into a tuple and return it
+    
+    #TODO
+    
+    # this may be not needed but for convinient you shoud do it
+        
+    pass
+
+
+
+
+
+
+
+
+
 
 def send_FORMAT(conn,msg):
     message = msg.encode(FORMAT)
