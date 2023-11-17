@@ -97,32 +97,15 @@ class Server:
         connected = True
         while connected: 
             CODE = recv_FORMAT(conn)
-            if CODE==TRANSFER:
-                file_name = recv_FORMAT(conn)
-                file_size = recv_FORMAT(conn)
-                with open("./recive/"+file_name,"wb") as file:
-                    c=0
-                    print(f"{CODE}")
-                    while c < int(file_size):
-                        msg_length = conn.recv(HEADER).decode(FORMAT)
-                        msg_length = int(msg_length)
-                        data = conn.recv(msg_length)
-                        if not (data):
-                            break
-                        print(f"{data}")
-                        c+=len(data)
-                    print(f"Transfer Complete")
+            if CODE==SHARE:
+                # add to the data_file  
+                
+                
+                pass
             elif CODE == DISCONECT:
                 #set connection to False
                 print(f"[{addr}] DISCONECTED")
                 connected=False
-            elif CODE == REQUEST:
-                # REQUEST 
-                # receive the file_name with the addr of that file
-                # add to the REQUEST_QUEUE (request_addr,receive_addr,file_name)
-                
-                
-                pass
             elif CODE == DISCORVER:
                 # DISCORVER
                 # send to this connection the list if active files

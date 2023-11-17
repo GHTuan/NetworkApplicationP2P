@@ -34,6 +34,7 @@ REQUEST = "REQUEST"
 DISCORVER = "DISCORVER"
 ERROR = "ERROR"
 SHARE = "SHARE"
+NOTFOUND = "FILE NOT FOUND"
 
 
 
@@ -84,28 +85,21 @@ class Peer:
         except:
             print(f"The server is offline")   
 
-    def handle_connection(self,conn,addr):
+    def handle_peer_connection(self,conn,addr):
         print(f"NEW CONNECTION {addr} connected.")
         connected = True
         while connected:
             CODE = recv_FORMAT(conn)
-            if CODE == TRANSFER:
-                file_name = recv_FORMAT(conn)
-                file_size = recv_FORMAT(conn)
-                file_path = "./recive/" + file_name
+            if CODE == REQUEST:
+                # locate the file the request needed
+                # if not found send to this connection the NOTFOUND code
+                # if found the file send the TRANSFER code then send the file to this connection
+                # reference: send_file()
+                
+                
+                # TODO
+                pass 
 
-                with open(file_path, "wb") as file:
-                    c = 0
-                    print(f"{CODE}")
-                    while c < int(file_size):
-                        data = conn.recv(1024)
-                        if not data:
-                            #the sender disconnected
-                            connected = False
-                        file.write(data)
-                        c += len(data)
-
-                    print("Transfer complete")
 
             elif CODE == DISCONNECT:
                 print(f"[{addr}] DISCONNECTED")
@@ -121,7 +115,7 @@ class Peer:
         
         while True:
             conn, addr = server.accept()
-            thread = threading.Thread(target=self.handle_connection, args=(conn,addr))
+            thread = threading.Thread(target=self.handle_peer_connection, args=(conn,addr))
             thread.start()
             print(f"[ACTIVE CONNECTONS] {threading.active_count() - 1}")
 
@@ -130,43 +124,18 @@ class Peer:
         print(f"DISCONNECT")
         self.peer.close()
 
-    def send_file(self,file_path):
-        file_name = os.path.basename(file_path)
-        file_size = os.path.getsize(file_path)
-
-        send_FORMAT(TRANSFER)
-        send_FORMAT(file_name)
-        send_FORMAT(str(file_size))
-
-        with open(file_path, 'rb') as file:
-            data = file.read(1024)
-            while data:
-                self.peer.send(data)
-                data = file.read(1024)
-
-            print("File transfer complete.")
-    def send_REQUEST(self):
-        #you will need to have a server to receive something
+    
+   
+    def send_SHARE(self,file_name):
         if not self.OPEN_SERVER:
             self.OPEN_SERVER = True
             server_thread = threading.Thread(target=self.startServer)
             server_thread.start()
-        send_FORMAT(self.peer ,REQUEST)
-        # send REQUEST
-        # you may need to change the parameter of this function for what needed
-        # send a REQUEST combine in one-line contain the following:
-        # request_addr : this is the address the file is sending from 
-        # receive_addr : this is the address of your server 
-        # file_name: string format
-        
-        # TODO
-        
-        pass
-    def send_SHARE(self,file_name):
         send_FORMAT(self.peer,SHARE)
         # send SHARE
         # this just need to inform the server the file it has
-        send_FORMAT(file_name)
+        # and the addr this peer have open the server on
+        send_FORMAT(((HOST, PORT),file_name))
     
     def send_DISCOVER(self):
         send_FORMAT(self.peer,DISCORVER)
@@ -185,8 +154,7 @@ class Peer:
         
         # TODO  
         pass
-
-    def handle_request(self):
+    def handle_request_from_mainServer(self):
         #will be a new thread to handle the server request
         connected = True
         while connected:
@@ -199,6 +167,9 @@ class Peer:
                 # use the send_file() function to send the file to that connection you just made
                 # disconect from that connection.
                 
+                
+
+                
                 # TODO
                 
                 # You can make new function for better visualization
@@ -207,8 +178,57 @@ class Peer:
             else:   
                 
                 pass
+                
+    #P2P Operation   
+    def send_file(self,file_path):
+        file_name = os.path.basename(file_path)
+        file_size = os.path.getsize(file_path)
 
+        send_FORMAT(TRANSFER)
+        send_FORMAT(file_name)
+        send_FORMAT(str(file_size))
+
+        with open(file_path, 'rb') as file:
+            data = file.read(1024)
+            while data:
+                self.peer.send(data)
+                data = file.read(1024)
+
+            print("File transfer complete.")
+    
+    
+    def recv_file(self,conn):
+        file_name = recv_FORMAT(conn)
+        file_size = recv_FORMAT(conn)
+        file_path = "./recive/" + file_name
+
+        with open(file_path, "wb") as file:
+            c = 0
+            while c < int(file_size):
+                data = conn.recv(1024)
+                if not data:
+                    #the sender disconnected
+                    connected = False
+                file.write(data)
+                c += len(data)
+
+            print("Transfer complete")
+          
+    def fetch(self):
+        # for sending multiple request when calling this function we should use threading 
         
+        # send REQUEST
+        # you need to change the parameter of this function for what needed
+        # connent to the other peer and send a REQUEST the REQUEST should contain the file_name it wanted
+        # after REQUEST you will be inform by a CODE [NOT FOUND,TRANSFER]
+        # if CODE is TRANSFER then there will be a files send to you, receive that file reference:recv_file
+        # disconect from this connection
+        
+        # TODO
+        
+        # send_FORMAT(self. ,REQUEST)
+        
+        pass
         
 # Testing Part
 # you need to run a dummy server to test 
