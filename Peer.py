@@ -6,27 +6,27 @@
 
 # Note that the address are in tuple format: (string,number)
 
-# IMPORTANT 
-# You can't send tuple so the work around will be sending a json obj
-# Implement the serialize and deserialize first
+# UPDATE 
+# update on the function send_FORMAT() and recv_FORMAT()
+# now the function can send any format use it to your advantage 
 
- 
+
 
 
 import socket
 import os
 import threading
 
-import json
+import pickle
 
 HEADER = 64
 FORMAT = 'utf-8'
 
 SERVER_HOST = "26.75.111.47"
-SERVER_PORT = 12345
+SERVER_PORT = 43432
 
 HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
-PORT = 43432
+PORT = 12345
 
 DISCONNECT = "DISCONNECT"
 TRANSFER = "TRANSFER FILE"
@@ -38,37 +38,24 @@ SHARE = "SHARE"
 
 
 def serialize(data):
-    # Input data is in tuple format
-    # Convert it into a json objs and return it
+    # Input data is in any format
+    # Convert it into a byte format using pickle and return it
     
-    #TODO
+    return pickle.dumps(data)
     
-    pass
-
 
 
 
 def deserialize(data):
-    # Input data is in json objs
-    # Convert it into a tuple and return it
-    
-    #TODO
-    
-    # this may be not needed but for convinient you shoud do it
+    # Input data is in byte format
+    # Convert the data back to it format and return it
+    return pickle.loads(data)
+
         
-    pass
-
-
-
-
-
-
-
-
 
 
 def send_FORMAT(conn,msg):
-    message = msg.encode(FORMAT)
+    message = serialize(msg)
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
@@ -80,7 +67,8 @@ def recv_FORMAT(conn):
     msg_length = conn.recv(HEADER).decode(FORMAT)
     if msg_length:
         msg_length = int(msg_length)
-        return conn.recv(msg_length).decode(FORMAT)
+        data = deserialize(conn.recv(msg_length))
+        return data
 
 
 class Peer:
@@ -170,7 +158,6 @@ class Peer:
         # request_addr : this is the address the file is sending from 
         # receive_addr : this is the address of your server 
         # file_name: string format
-        # Note that since REQUEST is a tuple (request_addr,receive_addr,file_name) you can't use send_FORMAT() 
         
         # TODO
         
@@ -187,10 +174,10 @@ class Peer:
         # you are about to receive a msg from the server
         # the msg in a tuple contain all the info about file the server has
         # design a way to receive that msg
-        # Note that since msg receive is a tuple you can't get it using recv_FORMAT()
         
-        # TODO
         
+        data = recv_FORMAT(self.peer)
+        print (f"{data}")
         pass
     def OFF(self):
         # you don't need to do this part yet
@@ -208,7 +195,6 @@ class Peer:
                 # receive REQUEST
                 # you are about to receive a msg from the server
                 # the msg in a tuple contain (request_addr,receive_addr,file_name)
-                # like the send_DISCOVER() your job is to retrive that msg
                 # next up, connect to the server with that receive_addr you just got
                 # use the send_file() function to send the file to that connection you just made
                 # disconect from that connection.
@@ -227,5 +213,6 @@ class Peer:
 # Testing Part
 # you need to run a dummy server to test 
 peer1 = Peer()
+peer1.send_DISCOVER()
 # add to function you want to test here
 #peer1.send_DISCONNECT()
