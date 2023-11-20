@@ -6,7 +6,7 @@ FORMAT = 'utf-8'
 
 
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 5554
+PORT = 43432
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST,PORT))
@@ -21,9 +21,7 @@ def recv_FORMAT(conn):
     if msg_length:
         msg_length = int(msg_length)
         return conn.recv(msg_length).decode(FORMAT)
-    pass
     
-
 def handle_client(conn,addr):
     print (f"NEW CONNECTION {addr} connected.")
     connected = True
@@ -60,8 +58,3 @@ def start():
 
 print("Starting the server")
 start()
-
-
-
-   
-    

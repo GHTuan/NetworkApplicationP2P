@@ -4,7 +4,7 @@ import os
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = "26.75.111.47"
+HOST = "10.230.93.136"
 PORT = 5554
 
 DISCONECT = "DISCONECT"
@@ -54,4 +54,4 @@ def disconect():
     
     
 send_file()
-#disconect()
+disconect()
