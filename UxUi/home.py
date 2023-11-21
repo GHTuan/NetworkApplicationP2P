@@ -68,6 +68,9 @@ class Ui_P2P_APP(object):
 
         self.retranslateUi(P2P_APP)
         QtCore.QMetaObject.connectSlotsByName(P2P_APP)
+        self.disconect.clicked.connect(self.disconnect)
+    def disconnect(self):
+        print("disconnected")
 
     def retranslateUi(self, P2P_APP):
         _translate = QtCore.QCoreApplication.translate
