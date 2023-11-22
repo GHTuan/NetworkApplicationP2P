@@ -12,7 +12,6 @@
 
 
 
-
 import socket
 import os
 import threading
@@ -34,8 +33,10 @@ REQUEST = "REQUEST"
 DISCORVER = "DISCORVER"
 ERROR = "ERROR"
 SHARE = "SHARE"
+UNSHARE = "STOPSHARING"
+SUCCESS = "SUCCESS"
+FAIL = "FAILED"
 NOTFOUND = "FILE NOT FOUND"
-
 
 
 def serialize(data):
@@ -74,38 +75,22 @@ def recv_FORMAT(conn):
 
 class Peer:
     def  __init__(self):
-        self.connect_To_MainServer()
         self.OPEN_SERVER=False
+        self.connect_To_MainServer()
+        
        
     def connect_To_MainServer(self):
         try:
-            self.peer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.peer.connect((SERVER_HOST, SERVER_PORT)) # of server
+            self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.conn.connect((SERVER_HOST, SERVER_PORT)) # of server
             print(f"Connection establishes")
         except:
             print(f"The server is offline")   
 
-    def handle_peer_connection(self,conn,addr):
-        print(f"NEW CONNECTION {addr} connected.")
-        connected = True
-        while connected:
-            CODE = recv_FORMAT(conn)
-            if CODE == REQUEST:
-                # locate the file the request needed
-                # if not found send to this connection the NOTFOUND code
-                # if found the file send the TRANSFER code then send the file to this connection
-                # reference: send_file()
-                
-                
-                # TODO
-                pass 
-
-
-            elif CODE == DISCONNECT:
-                print(f"[{addr}] DISCONNECTED")
-                connected = False
-        conn.close()
-            
+    def login(self,username="defauft",password="defauft"):
+        send_FORMAT(self.conn,(username,password))
+        r = recv_FORMAT(self.conn)
+        return r     
     def startServer(self):
         # This is the server on your computer that is responsible receiving the file
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -122,30 +107,35 @@ class Peer:
     def send_DISCONNECT(self):
         send_FORMAT(DISCONNECT)
         print(f"DISCONNECT")
-        self.peer.close()
-
-    
+        self.conn.close()
    
     def send_SHARE(self,file_name):
         if not self.OPEN_SERVER:
             self.OPEN_SERVER = True
             server_thread = threading.Thread(target=self.startServer)
             server_thread.start()
-        send_FORMAT(self.peer,SHARE)
+        send_FORMAT(self.conn,SHARE)
         # send SHARE
         # this just need to inform the server the file it has
         # and the addr this peer have open the server on
-        send_FORMAT(((HOST, PORT),file_name))
+        send_FORMAT(self.conn,((HOST, PORT),file_name))
     
-    def send_DISCOVER(self):
-        send_FORMAT(self.peer,DISCORVER)
+    def send_UNSHARE(self,file_name):
+        send_FORMAT(self.conn,UNSHARE)
+        
+        send_FORMAT(self.conn,((HOST, PORT),file_name))
+        r = recv_FORMAT(self.conn)
+        return r
+        
+    def send_DISCOVER(self,file=""):
+        send_FORMAT(self.conn,DISCORVER)
+        send_FORMAT(self.conn,'')
         # send DISCOVER
         # you are about to receive a msg from the server
         # the msg in a tuple contain all the info about file the server has
         # design a way to receive that msg
         
-        
-        data = recv_FORMAT(self.peer)
+        data = recv_FORMAT(self.conn)
         print (f"{data}")
         pass
     def OFF(self):
@@ -158,7 +148,7 @@ class Peer:
         #will be a new thread to handle the server request
         connected = True
         while connected:
-            CODE = recv_FORMAT(self.peer)    
+            CODE = recv_FORMAT(self.conn)    
             if CODE == REQUEST:
                 # receive REQUEST
                 # you are about to receive a msg from the server
@@ -166,9 +156,6 @@ class Peer:
                 # next up, connect to the server with that receive_addr you just got
                 # use the send_file() function to send the file to that connection you just made
                 # disconect from that connection.
-                
-                
-
                 
                 # TODO
                 
@@ -191,11 +178,9 @@ class Peer:
         with open(file_path, 'rb') as file:
             data = file.read(1024)
             while data:
-                self.peer.send(data)
+                self.conn.send(data)
                 data = file.read(1024)
-
             print("File transfer complete.")
-    
     
     def recv_file(self,conn):
         file_name = recv_FORMAT(conn)
@@ -229,10 +214,50 @@ class Peer:
         # send_FORMAT(self. ,REQUEST)
         
         pass
+    def handle_peer_connection(self,conn,addr):
+        print(f"NEW CONNECTION {addr} connected.")
+        connected = True
+        while connected:
+            CODE = recv_FORMAT(conn)
+            if CODE == REQUEST:
+                # locate the file the request needed
+                # if not found send to this connection the NOTFOUND code
+                # if found the file send the TRANSFER code then send the file to this connection
+                # reference: send_file()
+                
+                
+                # TODO
+                pass 
+
+
+            elif CODE == DISCONNECT:
+                print(f"[{addr}] DISCONNECTED")
+                connected = False
+        conn.close()
+    
         
 # Testing Part
 # you need to run a dummy server to test 
 peer1 = Peer()
+while True:
+    username=input("Username:")
+    password=input("Password:")
+    if peer1.login(username,password) == "Login in success":
+        break
+    else:
+        print("Wrong!")
+input()
+peer1.send_SHARE("Hehe.txt")
+peer1.send_SHARE("Hehe2.txt")
+input()
 peer1.send_DISCOVER()
+input()
+print(peer1.send_UNSHARE("Hehe.txt"))
+peer1.send_DISCOVER()
+input()
+print(peer1.send_UNSHARE("Hehe.txt"))
+peer1.send_DISCOVER()
+input()
+
 # add to function you want to test here
 #peer1.send_DISCONNECT()
