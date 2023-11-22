@@ -55,7 +55,6 @@ def recv_FORMAT(conn):
 
 
 
-
 class file_DATA:
     def __init__(self):
         self.Data = { 
@@ -127,12 +126,17 @@ class auth_DATA:
         
 class Server:
     def __init__(self):
+        self.file_Data = file_DATA()
+        self.auth_Data = auth_DATA(save_path)
+
+        #--------------Add dummy data----------------------
+        self.file_Data.add_to_data(('1.1.1.1',6702),"text.txt")
+        self.file_Data.add_to_data(('1.1.1.1',6701),"text2.txt")  
+        self.file_Data.add_to_data(('1.1.1.1',6702),"text2.txt")  
+        
+        #-----------------------------------------------------
         self.start()
-        pass
-    def discover(self):
-        pass
-    def receive_Data(self):
-        pass
+        
     def handle_connection(self,conn,addr):
         print (f"NEW CONNECTION {addr} connected.")
         connected = True
@@ -167,7 +171,8 @@ class Server:
                 send_FORMAT(conn,self.file_Data.delete_files_by_addr(msg[0],msg[1]))
                 # add to the data_file  
             elif CODE == DISCONECT:
-                #set connection to False
+                
+                # set connection to False
                 connected=False
             elif CODE == DISCORVER:
                 # DISCORVER
@@ -180,47 +185,45 @@ class Server:
                     send_FORMAT(conn,self.file_Data.get_all_active_files())
                 
         print(f"[{addr}] DISCONECTED")
+        # delete the share file of that addr
+        self.file_Data.rm_addr(addr)
         conn.close()
         
     def start(self):
-        # Start a server on a new thread 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((HOST,PORT))
         
-        self.file_Data = file_DATA()
-        self.auth_Data = auth_DATA(save_path)
-
-        #--------------Add dummy data----------------------
-        self.file_Data.add_to_data(('1.1.1.1',6702),"text.txt")
-        self.file_Data.add_to_data(('1.1.1.1',6701),"text2.txt")  
-        self.file_Data.add_to_data(('1.1.1.1',6702),"text2.txt")  
-        
-        #-----------------------------------------------------
-        
-        thread = threading.Thread(target=self.server_listener,name="Server listener thread")
-        thread.start()
+        self.thread = threading.Thread(target=self.server_listener,name="Server listener thread")
+        self.thread.start()
         
     def server_listener(self):
-
+        # Start the server on a new thread 
         
         self.server.listen()
         print(f"Listening at address {HOST}")
-        while True:
-            conn, addr = self.server.accept()
-            thread = threading.Thread(target=self.handle_connection, args=(conn,addr),name=addr)
-            thread.start()
-            print(f"[ACTIVE CONNECTONS] {threading.active_count() - 2}")
+        try:
+            while True:
+                conn, addr = self.server.accept()
+                thread = threading.Thread(target=self.handle_connection, args=(conn,addr),name=addr)
+                thread.start()
+                print(f"[ACTIVE CONNECTONS] {threading.active_count() - 2}")
+        except:
+            print("The server is close")
         
     def get_active_connection(self):
         return [thread.name for thread in threading.enumerate()]
-    
-
-
+    def get_share_files(self):
+        return self.file_Data.get_all_active_files()
+    def shutdown(self):
+        self.server.close()
 print("Starting the server")
-newServer = Server()
+server = Server()
 #Keep the main not dying
 input()
 #print(newServer.get_active_connection())
+server.shutdown()
+
+
 
 
 
@@ -246,7 +249,8 @@ input()
 
 # auth_Data = auth_DATA(save_path)
 
-# print(auth_Data.reg("NewUser","hello"))
-# print(auth_Data.auth("NewUser","hello"))
+# print(auth_Data.reg("hello","hello"))
+# print(auth_Data.reg("admin","admin"))
+# print(auth_Data.reg("123","123"))
+# print(auth_Data.get())
 # auth_Data.save()
-

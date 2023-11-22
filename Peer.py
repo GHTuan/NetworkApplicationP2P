@@ -77,8 +77,8 @@ class Peer:
     def  __init__(self):
         self.OPEN_SERVER=False
         self.connect_To_MainServer()
+        self.allowPath=[]
         
-       
     def connect_To_MainServer(self):
         try:
             self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -93,43 +93,62 @@ class Peer:
         return r     
     def startServer(self):
         # This is the server on your computer that is responsible receiving the file
-        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind((HOST, PORT))
-        server.listen(1)
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind((HOST, PORT))
+        print("Starting your sharing server")        
+        self.thread = threading.Thread(target=self.server_listener,name="Server listener thread")
+        self.thread.start()
+       
+    def server_listener(self):
+        self.server.listen(1)
         print('Server(Peer) is listening on {}:{}'.format(HOST, PORT))
-        
-        while True:
-            conn, addr = server.accept()
-            thread = threading.Thread(target=self.handle_peer_connection, args=(conn,addr))
-            thread.start()
-            print(f"[ACTIVE CONNECTONS] {threading.active_count() - 1}")
+        try:
+            while True:
+                conn, addr = self.server.accept()
+                thread = threading.Thread(target=self.handle_peer_connection, args=(conn,addr))
+                thread.start()
+                print(f"[ACTIVE CONNECTONS] {threading.active_count() - 1}")
+        except:
+            print("Your sharing server is shutdown")
+    
+    def OFF(self):
+        # try to turn off the connecion to the main server and your receive server (you might need to change some other starting function)
+        if(self.OPEN_SERVER):
+            self.server.close()
+            self.OPEN_SERVER=False
+        self.send_DISCONNECT()
 
     def send_DISCONNECT(self):
-        send_FORMAT(DISCONNECT)
+        send_FORMAT(self.conn,DISCONNECT)
         print(f"DISCONNECT")
         self.conn.close()
    
     def send_SHARE(self,file_name):
         if not self.OPEN_SERVER:
             self.OPEN_SERVER = True
-            server_thread = threading.Thread(target=self.startServer)
-            server_thread.start()
+            self.startServer()
         send_FORMAT(self.conn,SHARE)
         # send SHARE
         # this just need to inform the server the file it has
         # and the addr this peer have open the server on
         send_FORMAT(self.conn,((HOST, PORT),file_name))
+        self.allowPath.append(file_name)
     
     def send_UNSHARE(self,file_name):
         send_FORMAT(self.conn,UNSHARE)
         
         send_FORMAT(self.conn,((HOST, PORT),file_name))
         r = recv_FORMAT(self.conn)
+        if r == SUCCESS:
+            try:
+                self.allowPath.remove(file_name)
+            except:
+                return "This file is not currenly sharing"
         return r
         
     def send_DISCOVER(self,file=""):
         send_FORMAT(self.conn,DISCORVER)
-        send_FORMAT(self.conn,'')
+        send_FORMAT(self.conn,file)
         # send DISCOVER
         # you are about to receive a msg from the server
         # the msg in a tuple contain all the info about file the server has
@@ -137,13 +156,6 @@ class Peer:
         
         data = recv_FORMAT(self.conn)
         print (f"{data}")
-        pass
-    def OFF(self):
-        # you don't need to do this part yet
-        # try to turn off the connecion to the main server and your receive server (you might need to change some other starting function)
-        
-        # TODO  
-        pass
     def handle_request_from_mainServer(self):
         #will be a new thread to handle the server request
         connected = True
@@ -237,7 +249,9 @@ class Peer:
     
         
 # Testing Part
-# you need to run a dummy server to test 
+# Run the mainServer.py First
+
+
 peer1 = Peer()
 while True:
     username=input("Username:")
@@ -247,17 +261,13 @@ while True:
     else:
         print("Wrong!")
 input()
-peer1.send_SHARE("Hehe.txt")
-peer1.send_SHARE("Hehe2.txt")
+peer1.send_SHARE("wow")
 input()
-peer1.send_DISCOVER()
+peer1.send_DISCOVER("text2.txt")
+
 input()
-print(peer1.send_UNSHARE("Hehe.txt"))
-peer1.send_DISCOVER()
-input()
-print(peer1.send_UNSHARE("Hehe.txt"))
-peer1.send_DISCOVER()
-input()
+peer1.OFF()
+
 
 # add to function you want to test here
 #peer1.send_DISCONNECT()
