@@ -32,8 +32,8 @@ TRANSFER = "TRANSFER FILE"
 REQUEST = "REQUEST"
 DISCORVER = "DISCORVER"
 ERROR = "ERROR"
-SHARE = "SHARE"
-UNSHARE = "STOPSHARING"
+PUBLISH = "PUBLISH"
+UNPUBLISH = "UNPUBLISH"
 SUCCESS = "SUCCESS"
 FAIL = "FAILED"
 NOTFOUND = "FILE NOT FOUND"
@@ -112,7 +112,7 @@ class Peer:
             print("Your sharing server is shutdown")
     
     def OFF(self):
-        # try to turn off the connecion to the main server and your receive server (you might need to change some other starting function)
+        # turn off the connecion to the main server and your receive server (you might need to change some other starting function)
         if(self.OPEN_SERVER):
             self.server.close()
             self.OPEN_SERVER=False
@@ -123,19 +123,19 @@ class Peer:
         print(f"DISCONNECT")
         self.conn.close()
    
-    def send_SHARE(self,file_name):
+    def send_PUBLISH(self,file_name):
         if not self.OPEN_SERVER:
             self.OPEN_SERVER = True
             self.startServer()
-        send_FORMAT(self.conn,SHARE)
-        # send SHARE
+        send_FORMAT(self.conn,PUBLISH)
+        # send PUBLISH
         # this just need to inform the server the file it has
         # and the addr this peer have open the server on
         send_FORMAT(self.conn,((HOST, PORT),file_name))
         self.allowPath.append(file_name)
     
-    def send_UNSHARE(self,file_name):
-        send_FORMAT(self.conn,UNSHARE)
+    def send_UMPUBLISH(self,file_name):
+        send_FORMAT(self.conn,UNPUBLISH)
         
         send_FORMAT(self.conn,((HOST, PORT),file_name))
         r = recv_FORMAT(self.conn)
@@ -253,8 +253,8 @@ running = True
 while running:
     print("""
           Choose:
-          1. SHARE
-          2. UNSHARE
+          1. PUBLISH
+          2. UNPUBLISH
           3. DISCORVER
           4. DISCONECT
           5. FETCH
@@ -263,10 +263,10 @@ while running:
     op = int(input("ops:"))
     if op == 1:
         file_name = input("Ten File: ")
-        peer1.send_SHARE(file_name)
+        peer1.send_PUBLISH(file_name)
     elif op == 2:    
         file_name = input("Ten File: ")
-        peer1.send_UNSHARE(file_name)
+        peer1.send_UNPUBLISH(file_name)
     elif op == 3: 
         filter = input("Tim kiem (de trong de tim kiem tat ca): ")
         if filter:

@@ -15,8 +15,8 @@ TRANSFER = "TRANSFER FILE"
 REQUEST = "REQUEST"
 DISCORVER = "DISCORVER"
 ERROR = "ERROR"
-SHARE = "SHARE"
-UNSHARE = "STOPSHARING"
+PUBLISH = "PUBLISH"
+UNPUBLISH = "UNPUBLISH"
 SUCCESS = "SUCCESS"
 FAIL = "FAILED"
 
@@ -69,9 +69,8 @@ class file_DATA:
          if addr in self.Data:
             data_ = self.Data[addr]
             return data_
-    def rm_addr(self,addr):
-        if addr in self.Data:
-            del(self.Data[addr])
+    def rm_files_by_username(self,username):
+        self.Data = {k: (i[0],i[1]) for k, i in self.Data.items() if username != i[0]}
     def delete_files_by_addr(self,addr,file_name):
         if addr in self.Data:
             try: 
@@ -127,20 +126,11 @@ class auth_DATA:
 class Server:
     def __init__(self):
         self.file_Data = file_DATA()
-        self.auth_Data = auth_DATA(save_path)
-
-        #--------------Add dummy data----------------------
-        # self.file_Data.add_to_data(('1.1.1.1',6702),"text.txt")
-        # self.file_Data.add_to_data(('1.1.1.1',6701),"text2.txt")  
-        # self.file_Data.add_to_data(('1.1.1.1',6702),"text2.txt")  
-        
-        #-----------------------------------------------------
-        self.start()
-        
+        self.auth_Data = auth_DATA(save_path)        
     def handle_connection(self,conn,addr):
         print (f"NEW CONNECTION {addr} connected.")
         connected = True
-        
+        username = ""
         auth=False
         while not auth:
             auth_info = recv_FORMAT(conn)
@@ -162,41 +152,38 @@ class Server:
                 # The connection was forcefully shutdown
                 connected = False
                 break
-            
             if not CODE:
                 connected = False
                 break
-            
-            if CODE==SHARE:
+            if CODE==PUBLISH:
                 msg = recv_FORMAT(conn)
                 #(addr,filename)
+                print(f"{addr} PUBLISH {msg[1]}")
                 self.file_Data.add_to_data(msg[0],msg[1],username)
                 # add to the data_file
-            if CODE == UNSHARE:
+            if CODE == UNPUBLISH:
                 msg = recv_FORMAT(conn)
                 #(addr,filename)
+                print(f"{addr} UNPUBLISH {msg[1]}")
                 send_FORMAT(conn,self.file_Data.delete_files_by_addr(msg[0],msg[1]))
                 # add to the data_file  
             elif CODE == DISCONECT:
-                
                 # set connection to False
                 connected=False
-                # delete the share file of that addr
-                share_server_addr = recv_FORMAT(conn)
-                self.file_Data.rm_addr(addr)
             elif CODE == DISCORVER:
                 # DISCORVER
                 # send to this connection the list if active files
-                print(f"{addr} DISCORVER")
                 filter = recv_FORMAT(conn)
+                print(f"{addr} DISCORVER {filter}")
                 if (filter):
                     send_FORMAT(conn,self.file_Data.get_data_by_file_name(filter))
                 else:
                     send_FORMAT(conn,self.file_Data.get_all_active_files())
                 
         print(f"[{addr}] DISCONECTED")
+        # delete the share file of that addr
+        self.file_Data.rm_files_by_username(username)
         conn.close()
-        
     def start(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((HOST,PORT))
@@ -206,7 +193,6 @@ class Server:
         
     def server_listener(self):
         # Start the server on a new thread 
-        
         self.server.listen()
         print(f"Listening at address {HOST}")
         try:
@@ -226,6 +212,7 @@ class Server:
         self.server.close()
 print("Starting the server")
 server = Server()
+server.start()
 #Keep the main not dying
 input()
 #print(newServer.get_active_connection())
@@ -244,15 +231,17 @@ server.shutdown()
 
 # file_Data = file_DATA() 
 
-# file_Data.add_to_data(('1.1.1.1',6702),"text.txt")
+# file_Data.add_to_data(('1.1.1.1',6702),"text.txt","me")
 # file_Data.add_to_data(('1.1.1.1',6702),"text3.txt")
 # file_Data.add_to_data(('1.1.1.1',6701),"text2.txt","b")
 # file_Data.add_to_data(('1.1.1.1',6701),"text.txt")
-# print(file_Data.delete_files_by_addr(('1.1.1.1',6702),"text.txt"))
-# print(file_Data.delete_files_by_addr(('1.1.1.1',6702),"text.txt"))
+
+# file_Data.rm_files_by_username("me")
+# file_Data.rm_files_by_username("")
+
 
 # print(pickle.loads(pickle.dumps(file_Data.get_all_active_files())))
-# print(file_Data.get_data_by_file_name("text.txt"))
+# print(file_Data.get_all_active_files())
 
 
 # auth_Data = auth_DATA(save_path)
