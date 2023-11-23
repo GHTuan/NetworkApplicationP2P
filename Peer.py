@@ -156,63 +156,25 @@ class Peer:
         
         data = recv_FORMAT(self.conn)
         print (f"{data}")
-    def handle_request_from_mainServer(self):
-        #will be a new thread to handle the server request
-        connected = True
-        while connected:
-            CODE = recv_FORMAT(self.conn)    
-            if CODE == REQUEST:
-                # receive REQUEST
-                # you are about to receive a msg from the server
-                # the msg in a tuple contain (request_addr,receive_addr,file_name)
-                # next up, connect to the server with that receive_addr you just got
-                # use the send_file() function to send the file to that connection you just made
-                # disconect from that connection.
-                
-                # TODO
-                
-                # You can make new function for better visualization
-                
-                pass
-            else:   
-                
-                pass
-                
     #P2P Operation   
-    def send_file(self,file_path):
-        file_name = os.path.basename(file_path)
+    def send_file(self,conn,file_path):
+        
+        file_path = "./send/"+file_path
         file_size = os.path.getsize(file_path)
 
-        send_FORMAT(TRANSFER)
-        send_FORMAT(file_name)
-        send_FORMAT(str(file_size))
+        send_FORMAT(conn,str(file_size))
 
         with open(file_path, 'rb') as file:
             data = file.read(1024)
             while data:
-                self.conn.send(data)
+                conn.send(data)
                 data = file.read(1024)
             print("File transfer complete.")
     
-    def recv_file(self,conn):
-        file_name = recv_FORMAT(conn)
-        file_size = recv_FORMAT(conn)
-        file_path = "./recive/" + file_name
-
-        with open(file_path, "wb") as file:
-            c = 0
-            while c < int(file_size):
-                data = conn.recv(1024)
-                if not data:
-                    #the sender disconnected
-                    connected = False
-                file.write(data)
-                c += len(data)
-
-            print("Transfer complete")
+        
           
-    def fetch(self):
-        # for sending multiple request when calling this function we should use threading 
+    def fetch(self,addr,file_name):
+        # for sending multiple request when calling this function we should use threading when calling fetch
         
         # send REQUEST
         # you need to change the parameter of this function for what needed
@@ -220,12 +182,37 @@ class Peer:
         # after REQUEST you will be inform by a CODE [NOT FOUND,TRANSFER]
         # if CODE is TRANSFER then there will be a files send to you, receive that file reference:recv_file
         # disconect from this connection
+        try:
+            conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            conn.connect(addr)
+        except:
+            return "The request server is offline"
         
-        # TODO
+        send_FORMAT(conn,REQUEST)
+        send_FORMAT(conn,file_name)
+        r = recv_FORMAT(conn)
+        if r == NOTFOUND:
+            send_FORMAT(conn,DISCONNECT)
+            return "This file is not avilable"
+        else:
+            file_size = recv_FORMAT(conn)
+            file_path = "./receive/" + file_name
+
+            with open(file_path, "wb") as file:
+                c = 0
+                while c < int(file_size):
+                    data = conn.recv(1024)
+                    if not data:
+                        #the sender disconnected
+                        conn.close
+                    file.write(data)
+                    c += len(data)
+
+            print("Transfer complete")
+            
+            send_FORMAT(conn,DISCONNECT)
         
-        # send_FORMAT(self. ,REQUEST)
         
-        pass
     def handle_peer_connection(self,conn,addr):
         print(f"NEW CONNECTION {addr} connected.")
         connected = True
@@ -236,38 +223,73 @@ class Peer:
                 # if not found send to this connection the NOTFOUND code
                 # if found the file send the TRANSFER code then send the file to this connection
                 # reference: send_file()
-                
-                
-                # TODO
-                pass 
-
-
+                file_name = recv_FORMAT(conn)
+                print(f"Sending {file_name}")
+                if file_name in self.allowPath:
+                    send_FORMAT(conn,TRANSFER)
+                    self.send_file(conn,file_name)
+                else: 
+                    send_FORMAT(conn,NOTFOUND)
+                 
             elif CODE == DISCONNECT:
                 print(f"[{addr}] DISCONNECTED")
                 connected = False
         conn.close()
     
-        
 # Testing Part
 # Run the mainServer.py First
 
 
 peer1 = Peer()
 while True:
+    print("Testing username: 123, password:123")
     username=input("Username:")
     password=input("Password:")
     if peer1.login(username,password) == "Login in success":
         break
     else:
         print("Wrong!")
-input()
-peer1.send_SHARE("wow")
-input()
-peer1.send_DISCOVER("text2.txt")
-
-input()
-peer1.OFF()
-
+running = True
+while running:
+    print("""
+          Choose:
+          1. SHARE
+          2. UNSHARE
+          3. DISCORVER
+          4. DISCONECT
+          5. FETCH
+          6. OFF
+          """)
+    op = int(input("ops:"))
+    if op == 1:
+        file_name = input("Ten File: ")
+        peer1.send_SHARE(file_name)
+    elif op == 2:    
+        file_name = input("Ten File: ")
+        peer1.send_UNSHARE(file_name)
+    elif op == 3: 
+        filter = input("Tim kiem (de trong de tim kiem tat ca): ")
+        if filter:
+            peer1.send_DISCOVER(filter)
+        else :
+            peer1.send_DISCOVER()
+    elif op == 4: 
+        running = False
+        peer1.send_DISCONNECT()
+        
+    elif op == 5: 
+        ip = input("IP:")
+        port = int(input("PORT:"))
+        file_name = input("Ten file:")
+        print(peer1.fetch((ip,port),file_name))
+    elif op == 6: 
+        running = False
+        peer1.OFF()
+    else: 
+        running = False
+        print("unexpected input, OFF")
+        peer1.OFF()
+        
 
 # add to function you want to test here
 #peer1.send_DISCONNECT()

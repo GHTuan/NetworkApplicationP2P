@@ -5,8 +5,8 @@ import json,pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-
 HOST = socket.gethostbyname(socket.gethostname())
+# HOST = "192.168.100.3"
 PORT = 43432
 
 
@@ -26,7 +26,6 @@ def serialize(data):
     # Convert it into a byte format using pickle and return it
     
     return pickle.dumps(data)
-
 
 
 def deserialize(data):
@@ -71,7 +70,8 @@ class file_DATA:
             data_ = self.Data[addr]
             return data_
     def rm_addr(self,addr):
-        del(self.Data[addr])
+        if addr in self.Data:
+            del(self.Data[addr])
     def delete_files_by_addr(self,addr,file_name):
         if addr in self.Data:
             try: 
@@ -130,9 +130,9 @@ class Server:
         self.auth_Data = auth_DATA(save_path)
 
         #--------------Add dummy data----------------------
-        self.file_Data.add_to_data(('1.1.1.1',6702),"text.txt")
-        self.file_Data.add_to_data(('1.1.1.1',6701),"text2.txt")  
-        self.file_Data.add_to_data(('1.1.1.1',6702),"text2.txt")  
+        # self.file_Data.add_to_data(('1.1.1.1',6702),"text.txt")
+        # self.file_Data.add_to_data(('1.1.1.1',6701),"text2.txt")  
+        # self.file_Data.add_to_data(('1.1.1.1',6702),"text2.txt")  
         
         #-----------------------------------------------------
         self.start()
@@ -156,10 +156,17 @@ class Server:
                 username = auth_info[0]
                 break
         while connected: 
-            CODE = recv_FORMAT(conn)
+            try:
+                CODE = recv_FORMAT(conn)
+            except:
+                # The connection was forcefully shutdown
+                connected = False
+                break
+            
             if not CODE:
                 connected = False
                 break
+            
             if CODE==SHARE:
                 msg = recv_FORMAT(conn)
                 #(addr,filename)
@@ -174,6 +181,9 @@ class Server:
                 
                 # set connection to False
                 connected=False
+                # delete the share file of that addr
+                share_server_addr = recv_FORMAT(conn)
+                self.file_Data.rm_addr(addr)
             elif CODE == DISCORVER:
                 # DISCORVER
                 # send to this connection the list if active files
@@ -185,8 +195,6 @@ class Server:
                     send_FORMAT(conn,self.file_Data.get_all_active_files())
                 
         print(f"[{addr}] DISCONECTED")
-        # delete the share file of that addr
-        self.file_Data.rm_addr(addr)
         conn.close()
         
     def start(self):
@@ -248,7 +256,6 @@ server.shutdown()
 
 
 # auth_Data = auth_DATA(save_path)
-
 # print(auth_Data.reg("hello","hello"))
 # print(auth_Data.reg("admin","admin"))
 # print(auth_Data.reg("123","123"))
