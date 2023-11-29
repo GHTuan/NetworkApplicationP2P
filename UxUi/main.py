@@ -4,7 +4,7 @@ import home, pageshare, pagedown, table
 ui = ''
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
-
+table_window = table.TableWindow()
 def homeUi():
     global ui
     ui = home.Ui_P2P_APP()
@@ -18,6 +18,7 @@ def pagedownUi():
     ui = pagedown.Ui_Download()
     ui.setupUi(MainWindow)
     ui.back2.clicked.connect(homeUi)
+    ui.search_btn.clicked.connect(TableUi)
     MainWindow.show()
 
 def ShareUi():
@@ -27,7 +28,8 @@ def ShareUi():
     ui.back1.clicked.connect(homeUi)
     MainWindow.show()
 
-
+def TableUi():
+    table_window.show()
 #runapp
 homeUi()
 sys.exit(app.exec())

@@ -4,48 +4,55 @@ from PyQt6.QtCore import Qt
 
 
 class TableModel(QtCore.QAbstractTableModel):
-    def __init__(self, data):
+    def __init__(self, data, headers):
         super(TableModel, self).__init__()
         self._data = data
+        self.headers = headers
 
     def data(self, index, role):
         if role == Qt.ItemDataRole.DisplayRole:
-            # See below for the nested-list data structure.
-            # .row() indexes into the outer list,
-            # .column() indexes into the sub-list
             return self._data[index.row()][index.column()]
 
     def rowCount(self, index):
-        # The length of the outer list.
         return len(self._data)
 
     def columnCount(self, index):
-        # The following takes the first sub-list, and returns
-        # the length (only works if all rows are an equal length)
         return len(self._data[0])
 
+    def headerData(self, section, orientation, role):
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return self.headers[section]
+            elif orientation == Qt.Orientation.Vertical:
+                return str(section + 1)  # Đổi tên hàng thành số (hoặc bất kỳ thứ gì bạn muốn)
 
-class MainWindow(QtWidgets.QMainWindow):
+        return super().headerData(section, orientation, role)
+
+
+class TableWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.table = QtWidgets.QTableView()
 
-        data = [
-          [4, 9, 2],
-          [1, 0, 0],
-          [3, 5, 0],
-          [3, 3, 2],
-          [7, 8, 9],
+        self.data = [
+            [4, 9, 2],
+            [1, 0, 0],
+            [3, 5, 0],
+            [3, 3, 2]
         ]
 
-        self.model = TableModel(data)
+        headers = ["Address", "Owner", "FileName"]
+
+        self.model = TableModel(self.data, headers)
         self.table.setModel(self.model)
 
         self.setCentralWidget(self.table)
 
 
-app=QtWidgets.QApplication(sys.argv)
-window=MainWindow()
-window.show()
-app.exec()
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = TableWindow()
+    window.show()
+    sys.exit(app.exec())
+

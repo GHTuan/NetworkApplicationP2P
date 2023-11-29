@@ -8,7 +8,6 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-
 class Ui_P2P_APP(object):
     def setupUi(self, P2P_APP):
         P2P_APP.setObjectName("P2P_APP")
@@ -68,6 +67,9 @@ class Ui_P2P_APP(object):
 
         self.retranslateUi(P2P_APP)
         QtCore.QMetaObject.connectSlotsByName(P2P_APP)
+        
+        #connect function and button
+        
 
     def retranslateUi(self, P2P_APP):
         _translate = QtCore.QCoreApplication.translate
