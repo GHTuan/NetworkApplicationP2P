@@ -1,6 +1,6 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
-import home, pageshare, pagedown
+import home, pageshare, pagedown, table
 ui = ''
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
@@ -26,6 +26,7 @@ def ShareUi():
     ui.setupUi(MainWindow)
     ui.back1.clicked.connect(homeUi)
     MainWindow.show()
+
 
 #runapp
 homeUi()
