@@ -7,7 +7,6 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt
 
 class Ui_Download(object):
     def setupUi(self, Download):
