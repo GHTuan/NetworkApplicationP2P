@@ -7,9 +7,32 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt
 
 
-class Ui_Download(object):
+class TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == Qt.ItemDataRole.DisplayRole:
+            # See below for the nested-list data structure.
+            # .row() indexes into the outer list,
+            # .column() indexes into the sub-list
+            return self._data[index.row()][index.column()]
+
+    def rowCount(self, index):
+        # The length of the outer list.
+        return len(self._data)
+
+    def columnCount(self, index):
+        # The following takes the first sub-list, and returns
+        # the length (only works if all rows are an equal length)
+        return len(self._data[0])
+
+
+class Ui_Download(QtWidgets.QMainWindow):
     def setupUi(self, Download):
         Download.setObjectName("Download")
         Download.resize(407, 391)
@@ -44,33 +67,52 @@ class Ui_Download(object):
         self.disconect.setFont(font)
         self.disconect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.disconect.setObjectName("disconect")
-        self.tableWidget = QtWidgets.QTableWidget(parent=self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(0, 140, 411, 171))
-        self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(2)
-        self.tableWidget.setRowCount(9)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(4, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(5, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(6, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(7, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(8, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, item)
+        data = {('1.1.1.1', 6702): ('me', ['text.txt', 'text3.txt']), ('1.1.1.1', 6701): ('b', ['text2.txt', 'text.txt'])}
+        self.table = QtWidgets.QTableView()
+       
+        data = [
+          [4, 9, 2],
+          [1, 0, 0],
+          [3, 5, 0],
+          [3, 3, 2],
+          [7, 8, 9],
+        ]
+
+        
+        self.model = TableModel(data)
+        self.table.setModel(self.model)
+       
+        
+
+        
+        
+        # self.tableWidget = QtWidgets.QTableWidget(parent=self.centralwidget)
+        # self.tableWidget.setGeometry(QtCore.QRect(0, 140, 411, 171))
+        # self.tableWidget.setObjectName("tableWidget")
+        # self.tableWidget.setColumnCount(2)
+        # self.tableWidget.setRowCount(9)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(0, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(1, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(2, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(3, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(4, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(5, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(6, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(7, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setVerticalHeaderItem(8, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setHorizontalHeaderItem(0, item)
+        # item = QtWidgets.QTableWidgetItem()
+        # self.tableWidget.setHorizontalHeaderItem(1, item)
         self.label = QtWidgets.QLabel(parent=self.centralwidget)
         self.label.setGeometry(QtCore.QRect(170, 110, 47, 14))
         font = QtGui.QFont()
@@ -93,28 +135,29 @@ class Ui_Download(object):
         self.header_2.setText(_translate("Download", "SHARE FILE APPLICATION"))
         self.back2.setText(_translate("Download", "BACK"))
         self.disconect.setText(_translate("Download", "DISCONECT"))
-        item = self.tableWidget.verticalHeaderItem(0)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(1)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(2)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(3)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(4)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(5)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(6)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(7)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.verticalHeaderItem(8)
-        item.setText(_translate("Download", "New Row"))
-        item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("Download", "Name file"))
-        item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("Download", "Owner"))
+        self.table.show()
+        # item = self.tableWidget.verticalHeaderItem(0)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(1)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(2)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(3)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(4)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(5)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(6)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(7)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.verticalHeaderItem(8)
+        # item.setText(_translate("Download", "New Row"))
+        # item = self.tableWidget.horizontalHeaderItem(0)
+        # item.setText(_translate("Download", "Name file"))
+        # item = self.tableWidget.horizontalHeaderItem(1)
+        # item.setText(_translate("Download", "Owner"))
         self.label.setText(_translate("Download", "List file"))
 
 

@@ -21,10 +21,11 @@ import pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-SERVER_HOST = "26.75.111.47"
+SERVER_HOST = "192.168.62.119"
 SERVER_PORT = 43432
 
-HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
+#HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
+HOST = "192.168.62.119"
 PORT = 12345
 
 DISCONNECT = "DISCONNECT"
@@ -170,8 +171,6 @@ class Peer:
                 conn.send(data)
                 data = file.read(1024)
             print("File transfer complete.")
-    
-        
           
     def fetch(self,addr,file_name):
         # for sending multiple request when calling this function we should use threading when calling fetch
@@ -293,3 +292,4 @@ while running:
 
 # add to function you want to test here
 #peer1.send_DISCONNECT()
+
