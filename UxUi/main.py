@@ -1,6 +1,8 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
 import home, pageshare, pagedown, table
+
+
 ui = ''
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()

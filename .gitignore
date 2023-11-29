@@ -2,4 +2,6 @@ receive
 send/
 auth_DATA.txt
 
+UxUi/__pycache__/
+
 tempCodeRunnerFile.py
