@@ -1,6 +1,10 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
-import home, pageshare, pagedown, table
+sys.path.append(r'.\..\NetworkApplicationP2P')
+import home, pageshare, pagedown
+
+from backend.Peer import Peer
+
 ui = ''
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
@@ -18,6 +22,7 @@ def pagedownUi():
     ui = pagedown.Ui_Download()
     ui.setupUi(MainWindow)
     ui.back2.clicked.connect(homeUi)
+    ui.fetch_btn.clicked(p.fetch(ui.IP_text_box,ui.Port_text_box,ui.filename_text_box))
     MainWindow.show()
 
 def ShareUi():
@@ -29,5 +34,6 @@ def ShareUi():
 
 
 #runapp
+p = Peer()
 homeUi()
 sys.exit(app.exec())

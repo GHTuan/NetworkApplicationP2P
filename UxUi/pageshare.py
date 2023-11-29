@@ -70,6 +70,7 @@ class Ui_Sharewindow(object):
         self.label.setText(_translate("Sharewindow", "Enter your file:"))
         self.share.setText(_translate("Sharewindow", "SHARE"))
         self.back1.setText(_translate("Sharewindow", "BACK"))
+    
 
 
 if __name__ == "__main__":

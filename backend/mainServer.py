@@ -5,10 +5,11 @@ import json,pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-#HOST = socket.gethostbyname(socket.gethostname())
-HOST = "192.168.62.119"
+HOST = socket.gethostbyname(socket.gethostname())
+#HOST = "192.168.62.119"
 PORT = 43432
 
+save_path = "./auth_DATA.txt"
 
 DISCONECT = "DISCONECT"
 TRANSFER = "TRANSFER FILE"
@@ -40,12 +41,18 @@ def send_FORMAT(conn,msg):
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
-    conn.send(send_length)
-    conn.send(message)
+    try:
+        conn.send(send_length)
+        conn.send(message)
+    except:
+        pass
     
     
 def recv_FORMAT(conn):
-    msg_length = conn.recv(HEADER).decode(FORMAT)
+    try:
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+    except:
+        return DISCONECT
     if msg_length:
         msg_length = int(msg_length)
         data = deserialize(conn.recv(msg_length))
@@ -88,7 +95,6 @@ class file_DATA:
     def get_data_by_file_name(self,file_name):
         return {k: (i[0],[file_name]) for k, i in self.Data.items() if file_name in i[1]}
 
-save_path = "./auth_DATA.txt"
 
 
 class auth_DATA:
@@ -97,8 +103,7 @@ class auth_DATA:
         self.Data = {
         }
         self.Data = self.load()
-        
-        
+
     def reg(self,username,password):
         if username in self.Data:
             return "This user already exist"
@@ -119,7 +124,9 @@ class auth_DATA:
         with open(self.path,"rb") as files:
             data = files.read()
             if data:
-                return deserialize(data)    
+                return deserialize(data)  
+            else:
+                return {}  
     def get(self):
         return self.Data
         
@@ -211,12 +218,12 @@ class Server:
     def shutdown(self):
         self.server.close()
 print("Starting the server")
-# server = Server()
-# server.start()
-# #Keep the main not dying
-# input()
-# #print(newServer.get_active_connection())
-# server.shutdown()
+server = Server()
+server.start()
+#Keep the main not dying
+input()
+#print(newServer.get_active_connection())
+server.shutdown()
 
 
 
@@ -229,19 +236,19 @@ print("Starting the server")
 #     print('wow')
 
 
-file_Data = file_DATA() 
+# file_Data = file_DATA() 
 
-file_Data.add_to_data(('1.1.1.1',6702),"text.txt","me")
-file_Data.add_to_data(('1.1.1.1',6702),"text3.txt")
-file_Data.add_to_data(('1.1.1.1',6701),"text2.txt","b")
-file_Data.add_to_data(('1.1.1.1',6701),"text.txt")
-
+# file_Data.add_to_data(('1.1.1.1',6702),"text.txt","me")
+# file_Data.add_to_data(('1.1.1.1',6702),"text3.txt")
+# file_Data.add_to_data(('1.1.1.1',6701),"text2.txt","b")
+# file_Data.add_to_data(('1.1.1.1',6701),"text.txt")
+# print(file_Data.get_all_active_files())
 # file_Data.rm_files_by_username("me")
 # file_Data.rm_files_by_username("")
 
 
 # print(pickle.loads(pickle.dumps(file_Data.get_all_active_files())))
-print(file_Data.get_all_active_files())
+
 
 
 # auth_Data = auth_DATA(save_path)
@@ -250,3 +257,6 @@ print(file_Data.get_all_active_files())
 # print(auth_Data.reg("123","123"))
 # print(auth_Data.get())
 # auth_Data.save()
+
+# data = {('1.1.1.1', 6702): ('me', ['text.txt', 'text3.txt']), ('1.1.1.1', 6701): ('b', ['text2.txt', 'text.txt'])}
+# print ([[k, i[0],i[1]] for k, i in data.items()[2]])

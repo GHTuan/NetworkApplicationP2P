@@ -9,9 +9,6 @@
 # UPDATE 
 # update on the function send_FORMAT() and recv_FORMAT()
 # now the function can send any format use it to your advantage 
-
-
-
 import socket
 import os
 import threading
@@ -21,11 +18,11 @@ import pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-SERVER_HOST = "192.168.62.119"
+SERVER_HOST = "26.75.111.47"
 SERVER_PORT = 43432
 
-#HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
-HOST = "192.168.62.119"
+HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
+#HOST = "192.168.62.119"
 PORT = 12345
 
 DISCONNECT = "DISCONNECT"
@@ -290,6 +287,6 @@ while running:
         peer1.OFF()
         
 
-# add to function you want to test here
-#peer1.send_DISCONNECT()
+# # add to function you want to test here
+# #peer1.send_DISCONNECT()
 
