@@ -7,8 +7,11 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from ..backend.Peer import Peer
+
 class Ui_Sharewindow(object):
     fileName =''
+    peer = Peer
     def setupUi(self, Sharewindow):
         Sharewindow.setObjectName("Sharewindow")
         Sharewindow.resize(413, 390)
@@ -63,8 +66,8 @@ class Ui_Sharewindow(object):
         QtCore.QMetaObject.connectSlotsByName(Sharewindow)
 
         #connect function and button
-        self.share.clicked.connect(self.hello)
-        # self.share.clicked.connect(self.peer1.send_PUBLISH(self,fileName))
+        # self.share.clicked.connect(self.hello)
+        self.share.clicked.connect(self.peer1.send_PUBLISH(self,fileName))
 
     def retranslateUi(self, Sharewindow):
         _translate = QtCore.QCoreApplication.translate
@@ -73,6 +76,7 @@ class Ui_Sharewindow(object):
         self.label.setText(_translate("Sharewindow", "Enter your file:"))
         self.share.setText(_translate("Sharewindow", "SHARE"))
         self.back1.setText(_translate("Sharewindow", "BACK"))
+    # hàm test
     def hello(self):
         global fileName
         fileName = self.lineEdit.text()
