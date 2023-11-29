@@ -5,8 +5,8 @@ import json,pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = socket.gethostbyname(socket.gethostname())
-# HOST = "192.168.100.3"
+#HOST = socket.gethostbyname(socket.gethostname())
+HOST = "192.168.62.119"
 PORT = 43432
 
 
@@ -211,12 +211,12 @@ class Server:
     def shutdown(self):
         self.server.close()
 print("Starting the server")
-server = Server()
-server.start()
-#Keep the main not dying
-input()
-#print(newServer.get_active_connection())
-server.shutdown()
+# server = Server()
+# server.start()
+# #Keep the main not dying
+# input()
+# #print(newServer.get_active_connection())
+# server.shutdown()
 
 
 
@@ -229,19 +229,19 @@ server.shutdown()
 #     print('wow')
 
 
-# file_Data = file_DATA() 
+file_Data = file_DATA() 
 
-# file_Data.add_to_data(('1.1.1.1',6702),"text.txt","me")
-# file_Data.add_to_data(('1.1.1.1',6702),"text3.txt")
-# file_Data.add_to_data(('1.1.1.1',6701),"text2.txt","b")
-# file_Data.add_to_data(('1.1.1.1',6701),"text.txt")
+file_Data.add_to_data(('1.1.1.1',6702),"text.txt","me")
+file_Data.add_to_data(('1.1.1.1',6702),"text3.txt")
+file_Data.add_to_data(('1.1.1.1',6701),"text2.txt","b")
+file_Data.add_to_data(('1.1.1.1',6701),"text.txt")
 
 # file_Data.rm_files_by_username("me")
 # file_Data.rm_files_by_username("")
 
 
 # print(pickle.loads(pickle.dumps(file_Data.get_all_active_files())))
-# print(file_Data.get_all_active_files())
+print(file_Data.get_all_active_files())
 
 
 # auth_Data = auth_DATA(save_path)
