@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'app1.ui'
+# Form implementation generated from reading ui file 'home.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.0
 #
@@ -49,7 +49,7 @@ class Ui_P2P_APP(object):
         self.download.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.download.setObjectName("download")
         self.want = QtWidgets.QLabel(parent=self.centralwidget)
-        self.want.setGeometry(QtCore.QRect(170, 170, 71, 20))
+        self.want.setGeometry(QtCore.QRect(170, 140, 71, 20))
         self.want.setObjectName("want")
         self.disconect = QtWidgets.QPushButton(parent=self.centralwidget)
         self.disconect.setGeometry(QtCore.QRect(160, 340, 75, 23))
@@ -68,9 +68,6 @@ class Ui_P2P_APP(object):
 
         self.retranslateUi(P2P_APP)
         QtCore.QMetaObject.connectSlotsByName(P2P_APP)
-        self.disconect.clicked.connect(self.disconnect)
-    def disconnect(self):
-        print("disconnected")
 
     def retranslateUi(self, P2P_APP):
         _translate = QtCore.QCoreApplication.translate
