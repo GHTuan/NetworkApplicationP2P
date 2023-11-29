@@ -7,32 +7,8 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt
 
-
-class TableModel(QtCore.QAbstractTableModel):
-    def __init__(self, data):
-        super(TableModel, self).__init__()
-        self._data = data
-
-    def data(self, index, role):
-        if role == Qt.ItemDataRole.DisplayRole:
-            # See below for the nested-list data structure.
-            # .row() indexes into the outer list,
-            # .column() indexes into the sub-list
-            return self._data[index.row()][index.column()]
-
-    def rowCount(self, index):
-        # The length of the outer list.
-        return len(self._data)
-
-    def columnCount(self, index):
-        # The following takes the first sub-list, and returns
-        # the length (only works if all rows are an equal length)
-        return len(self._data[0])
-
-
-class Ui_Download(QtWidgets.QMainWindow):
+class Ui_Download(object):
     def setupUi(self, Download):
         Download.setObjectName("Download")
         Download.resize(407, 391)
@@ -40,7 +16,7 @@ class Ui_Download(QtWidgets.QMainWindow):
         self.centralwidget = QtWidgets.QWidget(parent=Download)
         self.centralwidget.setObjectName("centralwidget")
         self.header_2 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.header_2.setGeometry(QtCore.QRect(10, 30, 381, 51))
+        self.header_2.setGeometry(QtCore.QRect(20, 30, 381, 51))
         font = QtGui.QFont()
         font.setFamily("MS UI Gothic")
         font.setPointSize(24)
@@ -57,86 +33,32 @@ class Ui_Download(QtWidgets.QMainWindow):
         self.back2.setFont(font)
         self.back2.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.back2.setObjectName("back2")
-        data = {('1.1.1.1', 6702): ('me', ['text.txt', 'text3.txt']), ('1.1.1.1', 6701): ('b', ['text2.txt', 'text.txt'])}
-        self.table = QtWidgets.QTableView()
-       
-        data = [
-          [4, 9, 2],
-          [1, 0, 0],
-          [3, 5, 0],
-          [3, 3, 2],
-          [7, 8, 9],
-        ]
-
-        
-        self.model = TableModel(data)
-        self.table.setModel(self.model)
-       
-        
-
-        
-        
-        # self.tableWidget = QtWidgets.QTableWidget(parent=self.centralwidget)
-        # self.tableWidget.setGeometry(QtCore.QRect(0, 130, 411, 151))
-        # self.tableWidget.setObjectName("tableWidget")
-        # self.tableWidget.setColumnCount(2)
-        # self.tableWidget.setRowCount(9)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(0, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(1, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(2, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(3, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(4, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(5, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(6, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(7, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setVerticalHeaderItem(8, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setHorizontalHeaderItem(0, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tableWidget.setHorizontalHeaderItem(1, item)
-        self.label_listfile = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_listfile.setGeometry(QtCore.QRect(10, 110, 47, 14))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_listfile.setFont(font)
-        self.label_listfile.setObjectName("label_listfile")
         self.search_box = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.search_box.setGeometry(QtCore.QRect(90, 80, 251, 20))
+        self.search_box.setGeometry(QtCore.QRect(110, 160, 251, 20))
         self.search_box.setObjectName("search_box")
         self.search_btn = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.search_btn.setGeometry(QtCore.QRect(10, 80, 75, 23))
+        self.search_btn.setGeometry(QtCore.QRect(20, 160, 75, 23))
         self.search_btn.setObjectName("search_btn")
         self.IP_text_box = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.IP_text_box.setGeometry(QtCore.QRect(20, 310, 151, 20))
+        self.IP_text_box.setGeometry(QtCore.QRect(20, 260, 151, 20))
         self.IP_text_box.setObjectName("IP_text_box")
         self.Port_text_box = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.Port_text_box.setGeometry(QtCore.QRect(180, 310, 61, 20))
+        self.Port_text_box.setGeometry(QtCore.QRect(180, 260, 61, 20))
         self.Port_text_box.setObjectName("Port_text_box")
         self.filename_text_box = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.filename_text_box.setGeometry(QtCore.QRect(250, 310, 141, 20))
+        self.filename_text_box.setGeometry(QtCore.QRect(250, 260, 141, 20))
         self.filename_text_box.setObjectName("filename_text_box")
         self.label_3 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(20, 290, 21, 16))
+        self.label_3.setGeometry(QtCore.QRect(20, 240, 21, 16))
         self.label_3.setObjectName("label_3")
         self.label_4 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(180, 290, 21, 16))
+        self.label_4.setGeometry(QtCore.QRect(180, 240, 21, 16))
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_5.setGeometry(QtCore.QRect(250, 290, 51, 20))
+        self.label_5.setGeometry(QtCore.QRect(250, 240, 51, 20))
         self.label_5.setObjectName("label_5")
         self.fetch_btn = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.fetch_btn.setGeometry(QtCore.QRect(170, 340, 75, 23))
+        self.fetch_btn.setGeometry(QtCore.QRect(170, 290, 75, 23))
         self.fetch_btn.setObjectName("fetch_btn")
         Download.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(parent=Download)
@@ -151,31 +73,11 @@ class Ui_Download(QtWidgets.QMainWindow):
         Download.setWindowTitle(_translate("Download", "MainWindow"))
         self.header_2.setText(_translate("Download", "SHARE FILE APPLICATION"))
         self.back2.setText(_translate("Download", "BACK"))
-        self.disconect.setText(_translate("Download", "DISCONECT"))
-        self.table.show()
-        # item = self.tableWidget.verticalHeaderItem(0)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(1)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(2)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(3)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(4)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(5)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(6)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(7)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.verticalHeaderItem(8)
-        # item.setText(_translate("Download", "New Row"))
-        # item = self.tableWidget.horizontalHeaderItem(0)
-        # item.setText(_translate("Download", "Name file"))
-        # item = self.tableWidget.horizontalHeaderItem(1)
-        # item.setText(_translate("Download", "Owner"))
-        self.label.setText(_translate("Download", "List file"))
+        self.search_btn.setText(_translate("Download", "Search"))
+        self.label_3.setText(_translate("Download", "IP"))
+        self.label_4.setText(_translate("Download", "Port"))
+        self.label_5.setText(_translate("Download", "File name"))
+        self.fetch_btn.setText(_translate("Download", "Fetch"))
 
 
 if __name__ == "__main__":
