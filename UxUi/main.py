@@ -1,7 +1,9 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
 import home, pageshare, pagedown, table
-
+sys.path.append(r".\..")
+sys.path.append(r".")
+from backend.Peer import Peer
 
 ui = ''
 app = QtWidgets.QApplication(sys.argv)
@@ -21,17 +23,48 @@ def pagedownUi():
     ui.setupUi(MainWindow)
     ui.back2.clicked.connect(homeUi)
     ui.search_btn.clicked.connect(TableUi)
+    ui.fetch_btn.clicked.connect(FetchClicked)
     MainWindow.show()
+
+def FetchClicked():
+    # ui from pagedownUi
+    ip = ui.IP_text_box.text()
+    port = int(ui.Port_text_box.text())
+    file_name = ui.filename_text_box.text()
+    p.fetch((ip,port),file_name)
+    
 
 def ShareUi():
     global ui
     ui = pageshare.Ui_Sharewindow()
     ui.setupUi(MainWindow)
+    ui.share.clicked.connect(ShareClicked)
     ui.back1.clicked.connect(homeUi)
     MainWindow.show()
 
+def ShareClicked():
+    #ui from ShareUi
+    filename = ui.lineEdit.text()
+    p.send_PUBLISH(filename)
+
 def TableUi():
+    # ui from pagedownUi
+    filter = ui.search_box.text()
+    data = p.send_DISCOVER(filter) 
+    result = []
+    
+    for (ip, port), (name, files) in data.items():
+        for file in files:
+            result.append([ip, port , name, file])
+        
+    if result != []:
+        table_window.setData(result)    
+        
     table_window.show()
+    
 #runapp
+
+p = Peer()
+p.login("123","123")
 homeUi()
 sys.exit(app.exec())

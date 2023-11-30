@@ -153,7 +153,7 @@ class Peer:
         # design a way to receive that msg
         
         data = recv_FORMAT(self.conn)
-        print (f"{data}")
+        return data
     #P2P Operation   
     def send_file(self,conn,file_path):
         
@@ -236,55 +236,55 @@ class Peer:
 # Run the mainServer.py First
 
 
-peer1 = Peer()
-while True:
-    print("Testing username: 123, password:123")
-    username=input("Username:")
-    password=input("Password:")
-    if peer1.login(username,password) == "Login in success":
-        break
-    else:
-        print("Wrong!")
-running = True
-while running:
-    print("""
-          Choose:
-          1. PUBLISH
-          2. UNPUBLISH
-          3. DISCORVER
-          4. DISCONECT
-          5. FETCH
-          6. OFF
-          """)
-    op = int(input("ops:"))
-    if op == 1:
-        file_name = input("Ten File: ")
-        peer1.send_PUBLISH(file_name)
-    elif op == 2:    
-        file_name = input("Ten File: ")
-        peer1.send_UNPUBLISH(file_name)
-    elif op == 3: 
-        filter = input("Tim kiem (de trong de tim kiem tat ca): ")
-        if filter:
-            peer1.send_DISCOVER(filter)
-        else :
-            peer1.send_DISCOVER()
-    elif op == 4: 
-        running = False
-        peer1.send_DISCONNECT()
+# peer1 = Peer()
+# while True:
+#     print("Testing username: 123, password:123")
+#     username=input("Username:")
+#     password=input("Password:")
+#     if peer1.login(username,password) == "Login in success":
+#         break
+#     else:
+#         print("Wrong!")
+# running = True
+# while running:
+#     print("""
+#           Choose:
+#           1. PUBLISH
+#           2. UNPUBLISH
+#           3. DISCORVER
+#           4. DISCONECT
+#           5. FETCH
+#           6. OFF
+#           """)
+#     op = int(input("ops:"))
+#     if op == 1:
+#         file_name = input("Ten File: ")
+#         peer1.send_PUBLISH(file_name)
+#     elif op == 2:    
+#         file_name = input("Ten File: ")
+#         peer1.send_UNPUBLISH(file_name)
+#     elif op == 3: 
+#         filter = input("Tim kiem (de trong de tim kiem tat ca): ")
+#         if filter:
+#             peer1.send_DISCOVER(filter)
+#         else :
+#             peer1.send_DISCOVER()
+#     elif op == 4: 
+#         running = False
+#         peer1.send_DISCONNECT()
         
-    elif op == 5: 
-        ip = input("IP:")
-        port = int(input("PORT:"))
-        file_name = input("Ten file:")
-        print(peer1.fetch((ip,port),file_name))
-    elif op == 6: 
-        running = False
-        peer1.OFF()
-    else: 
-        running = False
-        print("unexpected input, OFF")
-        peer1.OFF()
+#     elif op == 5: 
+#         ip = input("IP:")
+#         port = int(input("PORT:"))
+#         file_name = input("Ten file:")
+#         print(peer1.fetch((ip,port),file_name))
+#     elif op == 6: 
+#         running = False
+#         peer1.OFF()
+#     else: 
+#         running = False
+#         print("unexpected input, OFF")
+#         peer1.OFF()
         
 
 # # add to function you want to test here
