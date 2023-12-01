@@ -1,6 +1,6 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
-import home, pageshare, pagedown, table, login_page,connect_server
+import home, pageshare, pagedown, table, login_page,connect_server,AlertWindow
 sys.path.append(r".\..")
 sys.path.append(r".")
 from backend.Peer import Peer
@@ -10,6 +10,7 @@ app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 
 table_window = table.TableWindow()
+Alert = AlertWindow.Ui_Alert()
 
 def loginUi():
     global ui
@@ -26,9 +27,8 @@ def LoginClick():
     if p.login(username,password) == "Login in success":
         homeUi()
     else:          
-        print("Login Fail! Login again!")
-
-    
+        Alert.setupUi("Login Fail! Login again!")
+        Alert.show()
 
 def homeUi():
     global ui
@@ -42,7 +42,7 @@ def homeUi():
 def DisconnectClick():
     # ui from homeUi
     p.OFF()
-    sys.exit(app.exec())
+    app.quit()
     
 def pagedownUi():
     global ui
@@ -58,13 +58,17 @@ def FetchClicked():
     ip = ui.IP_text_box.text()
     port = int(ui.Port_text_box.text())
     file_name = ui.filename_text_box.text()
-    p.fetch((ip,port),file_name)
+    r = "Error" #Place holder
+    r = p.fetch((ip,port),file_name)
+    Alert.setupUi(r)
+    Alert.show()
     
 def ShareUi():
     global ui
     ui = pageshare.Ui_Sharewindow()
     ui.setupUi(MainWindow)
     ui.share.clicked.connect(ShareClicked)
+    ui.un_share_btn.clicked.connect(UnShareClicked)
     ui.back1.clicked.connect(homeUi)
     MainWindow.show()
 
@@ -72,6 +76,15 @@ def ShareClicked():
     #ui from ShareUi
     filename = ui.lineEdit.text()
     p.send_PUBLISH(filename)
+    Alert.setupUi("Your file has been publish\n Check by searching in Download menu")
+    Alert.show()
+    
+def UnShareClicked():
+    filename = ui.unshare_box.text()
+    p.send_UNPUBLISH(filename)
+    Alert.setupUi("Your file has been unpublish\n Check by searching in Download menu")
+    Alert.show()
+    
 
 def TableUi():
     # ui from pagedownUi
@@ -85,9 +98,13 @@ def TableUi():
     table_window.setHeader(["IP","Port", "Owner", "FileName"])
     
     if result != []:
-        table_window.setData(result)    
+        table_window.setData(result) 
+        table_window.show()
+    else: 
+        Alert.setupUi("There is no file being share")
+        Alert.show()   
 
-    table_window.show()
+    
     
 def ConnectWindow():
     global ui
@@ -108,10 +125,8 @@ def ConnectClick():
     if (r == "Connection establishes"): 
         loginUi()
     else:
-        pass
-    
-   
-        
+        Alert.setupUi("The server is ofline or incorrect address")
+        Alert.show()        
 #runapp
 
 p = Peer()

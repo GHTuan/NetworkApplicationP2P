@@ -1,6 +1,6 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
-import feature_server, connect_server, table
+import feature_server, connect_server, table, AlertWindow
 sys.path.append(r".\..")
 sys.path.append(r".")
 from backend.mainServer import Server
@@ -11,7 +11,7 @@ MainWindow = QtWidgets.QMainWindow()
 
 table_user = table.TableWindow()
 table_file = table.TableWindow()
-
+Alert = AlertWindow.Ui_Alert()
 
 def homeUi():
     global ui
@@ -28,10 +28,15 @@ def StartClick():
     try:
         server.start()   
     except:
-        print("The server with this address is already open or incorect address")
+        Alert.setupUi("The server with this address \nis already open or incorrect address")
+        Alert.show()
 def StopClick():
-    server.shutdown() 
-    sys.exit(app.exec())
+    try:
+        server.shutdown() 
+        app.quit()
+    except:
+        Alert.setupUi("The server is not started")
+        Alert.show()
 def ShowfileClick():
     # ui from homeUi
     filter = ui.lineEdit.text()
@@ -44,7 +49,10 @@ def ShowfileClick():
     table_file.setHeader(["IP","Port", "Owner", "FileName"])    
     if result != []:
         table_file.setData(result)    
-    table_file.show()
+        table_file.show()
+    else:
+        Alert.setupUi("There is no file being share")
+        Alert.show()
 def ShowuserClick():
     data = server.get_active_connection()
     result = []
@@ -54,7 +62,10 @@ def ShowuserClick():
     table_user.setHeader(["UserName","Password", "Active"])
     if result != []:
         table_user.setData(result)    
-    table_user.show()
+        table_user.show()
+    else:
+        Alert.setupUi("There is no user online")
+        Alert.show()
     
     
 def ConnectWindow():
@@ -67,8 +78,8 @@ def ConnectWindow():
 def ConnectClick():
     ip = ui.username_input.text()
     port =  ui.password_input.text()
-    if ip=="" or port =="":
-        pass
+    if ip=="" or port =="" or ip=="Enter IP of server" or port=="Enter Port of server":
+        server.setHost()
     else:
         server.setHost(ip,int(port))
     homeUi()

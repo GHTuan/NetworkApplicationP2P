@@ -34,21 +34,14 @@ class TableWindow(QtWidgets.QMainWindow):
         self.headers = header
     def setData(self,data):
         self.data = data
-
         self.model = TableModel(self.data, self.headers)
         self.table.setModel(self.model)
 
         self.setCentralWidget(self.table)
-
-    
-    
     def __init__(self):
         super().__init__()
         self.data=[[]]
         self.table = QtWidgets.QTableView()
-        
-        
-        
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

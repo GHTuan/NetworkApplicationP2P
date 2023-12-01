@@ -9,36 +9,42 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Alert(object):
-    def setupUi(self, Alert):
-        Alert.setObjectName("Alert")
-        Alert.resize(246, 131)
-        Alert.setStyleSheet("background-color: rgb(193, 255, 216);")
-        self.centralwidget = QtWidgets.QWidget(parent=Alert)
-        self.centralwidget.setObjectName("centralwidget")
-        self.Notice = QtWidgets.QLabel(parent=self.centralwidget)
+class Ui_Alert(QtWidgets.QMainWindow):
+    def setupUi(self, text):
+        self.setObjectName("Alert")
+        self.resize(246, 131)
+        self.setStyleSheet("background-color: rgb(255, 255, 255);")
+        
+        # Create central widget instance
+        self.centralWidget = QtWidgets.QWidget(self)
+        self.centralWidget.setObjectName("centralwidget")
+        
+        # Instantiate QLabel
+        self.Notice = QtWidgets.QLabel(self.centralWidget)
         self.Notice.setGeometry(QtCore.QRect(30, 40, 191, 51))
         self.Notice.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.Notice.setText("")
+        self.Notice.setText(text)
         self.Notice.setObjectName("Notice")
-        Alert.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(parent=Alert)
+
+        self.setCentralWidget(self.centralWidget)
+        
+        # Create status bar instance
+        self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setObjectName("statusbar")
-        Alert.setStatusBar(self.statusbar)
+        self.setStatusBar(self.statusbar)
 
-        self.retranslateUi(Alert)
-        QtCore.QMetaObject.connectSlotsByName(Alert)
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
 
-    def retranslateUi(self, Alert):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        Alert.setWindowTitle(_translate("Alert", "AlertWindow"))
+        self.setWindowTitle(_translate("Alert", "AlertWindow"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Alert = QtWidgets.QMainWindow()
-    ui = Ui_Alert()
-    ui.setupUi(Alert)
-    Alert.show()
+    window = Ui_Alert()
+    window.show()
     sys.exit(app.exec())
+

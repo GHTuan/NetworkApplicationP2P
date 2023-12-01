@@ -132,7 +132,7 @@ class Peer:
         send_FORMAT(self.conn,((self.HOST, self.PORT),file_name))
         self.allowPath.append(file_name)
     
-    def send_UMPUBLISH(self,file_name):
+    def send_UNPUBLISH(self,file_name):
         send_FORMAT(self.conn,UNPUBLISH)
         
         send_FORMAT(self.conn,((self.HOST, self.PORT),file_name))
@@ -208,9 +208,8 @@ class Peer:
                     file.write(data)
                     c += len(data)
 
-            print("Transfer complete")
-            
             send_FORMAT(conn,DISCONNECT)
+            return ("Transfer complete")
         
         
     def handle_peer_connection(self,conn,addr):
