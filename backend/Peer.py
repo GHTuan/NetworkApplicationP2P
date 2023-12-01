@@ -19,6 +19,7 @@ HEADER = 64
 FORMAT = 'utf-8'
 
 SERVER_HOST = "26.75.111.47"
+# SERVER_HOST = "26.75.111.47"
 SERVER_PORT = 43432
 
 HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
