@@ -14,6 +14,7 @@ class Ui_Sharewindow(object):
         Sharewindow.setObjectName("Sharewindow")
         Sharewindow.resize(413, 390)
         Sharewindow.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        Sharewindow.setStyleSheet("background-color: rgb(193, 255, 216);")
         self.centralwidget = QtWidgets.QWidget(parent=Sharewindow)
         self.centralwidget.setObjectName("centralwidget")
         self.header_2 = QtWidgets.QLabel(parent=self.centralwidget)
@@ -44,6 +45,7 @@ class Ui_Sharewindow(object):
         font.setStrikeOut(False)
         self.share.setFont(font)
         self.share.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        self.share.setStyleSheet("border-color: rgb(0, 0, 127);")
         self.share.setObjectName("share")
         self.back1 = QtWidgets.QPushButton(parent=self.centralwidget)
         self.back1.setGeometry(QtCore.QRect(0, 0, 75, 23))
@@ -63,10 +65,6 @@ class Ui_Sharewindow(object):
         self.retranslateUi(Sharewindow)
         QtCore.QMetaObject.connectSlotsByName(Sharewindow)
 
-        #connect function and button
-        # self.share.clicked.connect(self.hello)
-        
-
     def retranslateUi(self, Sharewindow):
         _translate = QtCore.QCoreApplication.translate
         Sharewindow.setWindowTitle(_translate("Sharewindow", "ShareFile"))
@@ -74,11 +72,7 @@ class Ui_Sharewindow(object):
         self.label.setText(_translate("Sharewindow", "Enter your file:"))
         self.share.setText(_translate("Sharewindow", "SHARE"))
         self.back1.setText(_translate("Sharewindow", "BACK"))
-    # hàm test
-    def hello(self):
-        global fileName
-        fileName = self.lineEdit.text()
-        print("hello world ", fileName)
+
 
 if __name__ == "__main__":
     import sys

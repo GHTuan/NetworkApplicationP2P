@@ -8,15 +8,18 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+
 class Ui_Download(object):
     def setupUi(self, Download):
         Download.setObjectName("Download")
+        Download.setWindowModality(QtCore.Qt.WindowModality.WindowModal)
         Download.resize(407, 391)
         Download.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        Download.setStyleSheet("background-color: rgb(193, 255, 216);")
         self.centralwidget = QtWidgets.QWidget(parent=Download)
         self.centralwidget.setObjectName("centralwidget")
         self.header_2 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.header_2.setGeometry(QtCore.QRect(20, 30, 381, 51))
+        self.header_2.setGeometry(QtCore.QRect(20, 40, 381, 51))
         font = QtGui.QFont()
         font.setFamily("MS UI Gothic")
         font.setPointSize(24)

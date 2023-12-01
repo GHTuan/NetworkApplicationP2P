@@ -1,6 +1,6 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
-import home, pageshare, pagedown, table
+import home, pageshare, pagedown, table, login_page
 sys.path.append(r".\..")
 sys.path.append(r".")
 from backend.Peer import Peer
@@ -9,6 +9,26 @@ ui = ''
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 table_window = table.TableWindow()
+
+USER = "123"
+PASS = "123"
+
+def loginUi():
+    global ui
+    ui = login_page.Ui_login()
+    ui.setupUi(MainWindow)
+    username = ui.username_input.text()
+    passwork = ui.password_input.text()
+    notLog = True #chưa đăng nhập =true
+    while notLog:
+        if p.login(username,passwork) == "Login in success":
+            ui.loginButton.clicked.connect(homeUi)
+            notLog = False
+        else:
+            notLog = True   
+            print("Login Fail! Login again!") 
+    MainWindow.show()            
+
 def homeUi():
     global ui
     ui = home.Ui_P2P_APP()
@@ -65,6 +85,6 @@ def TableUi():
 #runapp
 
 p = Peer()
-p.login("123","123")
-homeUi()
+# p.login("123","123")
+loginUi()
 sys.exit(app.exec())

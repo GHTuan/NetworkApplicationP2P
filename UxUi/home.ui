@@ -16,6 +16,9 @@
   <property name="windowTitle">
    <string>P2P APP</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(193, 255, 216);</string>
+  </property>
   <property name="animated">
    <bool>true</bool>
   </property>
