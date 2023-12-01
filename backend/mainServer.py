@@ -143,7 +143,7 @@ class Server:
         self.file_Data = file_DATA()
         self.auth_Data = auth_DATA(save_path) 
         self.setHost()
-    def setHOST(self,host = socket.gethostbyname(socket.gethostname()),port = 54321):
+    def setHost(self,host = socket.gethostbyname(socket.gethostname()),port = 54321):
         self.HOST = host
         self.PORT = port
     def handle_connection(self,conn,addr):
@@ -226,18 +226,21 @@ class Server:
             print("The server is close")
         
     def get_active_connection(self):
-        return [thread.name for thread in threading.enumerate()]
-    def get_share_files(self):
-        return self.file_Data.get_all_active_files()
+        return self.auth_Data.get_active_user()
+    def get_share_files(self,filter):
+        if (filter):
+            return self.file_Data.get_data_by_file_name(filter)
+        else:
+            return self.file_Data.get_all_active_files()
     def shutdown(self):
         self.server.close()
-print("Starting the server")
-server = Server()
-server.start()
-#Keep the main not dying
-input()
-#print(newServer.get_active_connection())
-server.shutdown()
+# print("Starting the server")
+# server = Server()
+# server.start()
+# #Keep the main not dying
+# input()
+# #print(newServer.get_active_connection())
+# server.shutdown()
 
 
 
@@ -269,6 +272,7 @@ server.shutdown()
 # print(auth_Data.reg("hello","hello"))
 # print(auth_Data.reg("admin","admin"))
 # print(auth_Data.reg("123","123"))
+# auth_Data.reg("Tuan","321")
 # auth_Data.save()
 
 # data = {('1.1.1.1', 6702): ('me', ['text.txt', 'text3.txt']), ('1.1.1.1', 6701): ('b', ['text2.txt', 'text.txt'])}

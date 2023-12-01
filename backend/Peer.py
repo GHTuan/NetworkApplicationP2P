@@ -68,7 +68,6 @@ def recv_FORMAT(conn):
 class Peer:
     def  __init__(self):
         self.OPEN_SERVER=False
-        self.connect_To_MainServer()
         self.allowPath=[]
         self.setHost()
         self.setServerHost()
@@ -80,9 +79,11 @@ class Peer:
         try:
             self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.conn.connect((self.SERVER_HOST, self.SERVER_PORT)) # of server
-            print(f"Connection establishes")
+            print("Connection establishes")
+            return "Connection establishes"
         except:
-            print(f"The server is offline")   
+            print("The server is offline")
+            return "The server is offline"
 
     def login(self,username="defauft",password="defauft"):
         send_FORMAT(self.conn,(username,password))
@@ -288,7 +289,6 @@ class Peer:
 #         running = False
 #         print("unexpected input, OFF")
 #         peer1.OFF()
-        
 
 # # add to function you want to test here
 # #peer1.send_DISCONNECT()

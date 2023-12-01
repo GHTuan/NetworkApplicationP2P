@@ -1,6 +1,6 @@
 from PyQt6 import QtGui,QtWidgets, QtCore
 import sys
-import home, pageshare, pagedown, table, login_page
+import home, pageshare, pagedown, table, login_page,connect_server
 sys.path.append(r".\..")
 sys.path.append(r".")
 from backend.Peer import Peer
@@ -8,26 +8,27 @@ from backend.Peer import Peer
 ui = ''
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
-table_window = table.TableWindow()
 
-USER = "123"
-PASS = "123"
+table_window = table.TableWindow()
 
 def loginUi():
     global ui
     ui = login_page.Ui_login()
     ui.setupUi(MainWindow)
-    username = ui.username_input.text()
-    passwork = ui.password_input.text()
-    notLog = True #chưa đăng nhập =true
-    while notLog:
-        if p.login(username,passwork) == "Login in success":
-            ui.loginButton.clicked.connect(homeUi)
-            notLog = False
-        else:
-            notLog = True   
-            print("Login Fail! Login again!") 
+    ui.loginButton.clicked.connect(LoginClick)
     MainWindow.show()            
+
+def LoginClick():
+    # ui from loginUi
+    
+    username = ui.username_input.text()
+    password = ui.password_input.text()
+    if p.login(username,password) == "Login in success":
+        homeUi()
+    else:          
+        print("Login Fail! Login again!")
+
+    
 
 def homeUi():
     global ui
@@ -35,8 +36,14 @@ def homeUi():
     ui.setupUi(MainWindow)
     ui.download.clicked.connect(pagedownUi)
     ui.sharefile.clicked.connect(ShareUi)
+    ui.disconect.clicked.connect(DisconnectClick)
     MainWindow.show()
-
+    
+def DisconnectClick():
+    # ui from homeUi
+    p.OFF()
+    sys.exit(app.exec())
+    
 def pagedownUi():
     global ui
     ui = pagedown.Ui_Download()
@@ -53,7 +60,6 @@ def FetchClicked():
     file_name = ui.filename_text_box.text()
     p.fetch((ip,port),file_name)
     
-
 def ShareUi():
     global ui
     ui = pageshare.Ui_Sharewindow()
@@ -76,15 +82,38 @@ def TableUi():
     for (ip, port), (name, files) in data.items():
         for file in files:
             result.append([ip, port , name, file])
-        
+    table_window.setHeader(["IP","Port", "Owner", "FileName"])
+    
     if result != []:
         table_window.setData(result)    
-        
+
     table_window.show()
     
+def ConnectWindow():
+    global ui
+    ui = connect_server.Ui_Connect_server()
+    ui.setupUi(MainWindow)
+    ui.connect_server_btn.clicked.connect(ConnectClick)
+    MainWindow.show()
+
+def ConnectClick():
+    ip = ui.username_input.text()
+    port =  ui.password_input.text()
+    if ip=="" or port =="" or ip=="Enter IP of server" or port=="Enter Port of server":
+        #use default host
+        p.setServerHost()
+    else:
+        p.setServerHost(ip,int(port))
+    r = p.connect_To_MainServer()
+    if (r == "Connection establishes"): 
+        loginUi()
+    else:
+        pass
+    
+   
+        
 #runapp
 
 p = Peer()
-# p.login("123","123")
-loginUi()
+ConnectWindow()
 sys.exit(app.exec())

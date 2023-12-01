@@ -30,15 +30,18 @@ class TableModel(QtCore.QAbstractTableModel):
 
 
 class TableWindow(QtWidgets.QMainWindow):
+    def setHeader(self,header):
+        self.headers = header
     def setData(self,data):
         self.data = data
-        headers = ["IP","Port", "Owner", "FileName"]
 
-        self.model = TableModel(self.data, headers)
+        self.model = TableModel(self.data, self.headers)
         self.table.setModel(self.model)
 
         self.setCentralWidget(self.table)
 
+    
+    
     def __init__(self):
         super().__init__()
         self.data=[[]]
