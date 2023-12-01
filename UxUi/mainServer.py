@@ -71,7 +71,7 @@ def ShowuserClick():
 def ConnectWindow():
     global ui
     ui = connect_server.Ui_Connect_server()
-    ui.setupUi(MainWindow)
+    ui.setupUi(MainWindow,'server')
     ui.connect_server_btn.clicked.connect(ConnectClick)
     MainWindow.show()   
 

@@ -10,10 +10,13 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 
 
 class Ui_Connect_server(object):
-    def setupUi(self, Connect_server):
+    def setupUi(self, Connect_server,color='client'):
         Connect_server.setObjectName("Connect_server")
         Connect_server.resize(412, 387)
-        Connect_server.setStyleSheet("background-color: rgb(193, 255, 216);")
+        if color ==  'server':
+                Connect_server.setStyleSheet("background-color: rgb(255, 255, 255);")
+        else:
+                Connect_server.setStyleSheet("background-color: rgb(193, 255, 216);")
         self.centralwidget = QtWidgets.QWidget(parent=Connect_server)
         self.centralwidget.setObjectName("centralwidget")
         self.connect_server_btn = QtWidgets.QPushButton(parent=self.centralwidget)

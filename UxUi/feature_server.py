@@ -13,7 +13,7 @@ class Ui_Feature_sever(object):
     def setupUi(self, Feature_sever):
         Feature_sever.setObjectName("Feature_sever")
         Feature_sever.resize(414, 390)
-        Feature_sever.setStyleSheet("background-color: rgb(193, 255, 216);")
+        Feature_sever.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.centralwidget = QtWidgets.QWidget(parent=Feature_sever)
         self.centralwidget.setObjectName("centralwidget")
         self.Showfile_btn = QtWidgets.QPushButton(parent=self.centralwidget)
