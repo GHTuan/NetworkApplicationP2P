@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>login</class>
+ <widget class="QMainWindow" name="login">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -45,7 +45,7 @@ font: 75 20pt &quot;MS Shell Dlg 2&quot;;
      <string>Login</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="user_name">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -61,7 +61,7 @@ font: 75 20pt &quot;MS Shell Dlg 2&quot;;
      <string>Username:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLabel" name="password">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -80,7 +80,7 @@ font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
      <string>Password:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="username_input">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -96,7 +96,7 @@ font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
      <string notr="true">color: qlineargradient(spread:pad, x1:0.75, y1:0.3575, x2:0.153, y2:0.585, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="password_input">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -104,6 +104,23 @@ font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
       <width>201</width>
       <height>21</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loginButton">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>260</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 10pt &quot;MS Shell Dlg 2&quot;;
+font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Login</string>
     </property>
    </widget>
   </widget>

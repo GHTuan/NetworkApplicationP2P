@@ -9,12 +9,12 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(413, 389)
-        MainWindow.setStyleSheet("background-color: rgb(193, 255, 216);")
-        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+class Ui_login(object):
+    def setupUi(self, login):
+        login.setObjectName("login")
+        login.resize(413, 389)
+        login.setStyleSheet("background-color: rgb(193, 255, 216);")
+        self.centralwidget = QtWidgets.QWidget(parent=login)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(parent=self.centralwidget)
         self.label.setGeometry(QtCore.QRect(180, 80, 71, 31))
@@ -30,46 +30,52 @@ class Ui_MainWindow(object):
 "font: 75 20pt \"MS Shell Dlg 2\";\n"
 "")
         self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(100, 150, 71, 21))
-        self.label_2.setStyleSheet("font: 10pt \"MS Shell Dlg 2\";")
-        self.label_2.setObjectName("label_2")
-        self.label_3 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(100, 200, 71, 21))
-        self.label_3.setStyleSheet("color: rgb(255, 255, 255);\n"
+        self.user_name = QtWidgets.QLabel(parent=self.centralwidget)
+        self.user_name.setGeometry(QtCore.QRect(100, 150, 71, 21))
+        self.user_name.setStyleSheet("font: 10pt \"MS Shell Dlg 2\";")
+        self.user_name.setObjectName("user_name")
+        self.password = QtWidgets.QLabel(parent=self.centralwidget)
+        self.password.setGeometry(QtCore.QRect(100, 200, 71, 21))
+        self.password.setStyleSheet("color: rgb(255, 255, 255);\n"
 "color: rgb(0, 0, 0);\n"
 "font: 75 8pt \"MS Shell Dlg 2\";\n"
 "font: 10pt \"MS Shell Dlg 2\";")
-        self.label_3.setObjectName("label_3")
-        self.lineEdit = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(180, 150, 201, 21))
-        self.lineEdit.setMouseTracking(True)
-        self.lineEdit.setStyleSheet("color: qlineargradient(spread:pad, x1:0.75, y1:0.3575, x2:0.153, y2:0.585, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));")
-        self.lineEdit.setObjectName("lineEdit")
-        self.lineEdit_2 = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.lineEdit_2.setGeometry(QtCore.QRect(180, 200, 201, 21))
-        self.lineEdit_2.setObjectName("lineEdit_2")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
+        self.password.setObjectName("password")
+        self.username_input = QtWidgets.QLineEdit(parent=self.centralwidget)
+        self.username_input.setGeometry(QtCore.QRect(180, 150, 201, 21))
+        self.username_input.setMouseTracking(True)
+        self.username_input.setStyleSheet("color: qlineargradient(spread:pad, x1:0.75, y1:0.3575, x2:0.153, y2:0.585, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));")
+        self.username_input.setObjectName("username_input")
+        self.password_input = QtWidgets.QLineEdit(parent=self.centralwidget)
+        self.password_input.setGeometry(QtCore.QRect(180, 200, 201, 21))
+        self.password_input.setObjectName("password_input")
+        self.loginButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.loginButton.setGeometry(QtCore.QRect(170, 260, 75, 23))
+        self.loginButton.setStyleSheet("font: 75 10pt \"MS Shell Dlg 2\";\n"
+"font: 8pt \"MS Shell Dlg 2\";")
+        self.loginButton.setObjectName("loginButton")
+        login.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(parent=login)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        login.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(login)
+        QtCore.QMetaObject.connectSlotsByName(login)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, login):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "login_page"))
-        self.label.setText(_translate("MainWindow", "Login"))
-        self.label_2.setText(_translate("MainWindow", "Username:"))
-        self.label_3.setText(_translate("MainWindow", "Password:"))
+        login.setWindowTitle(_translate("login", "login_page"))
+        self.label.setText(_translate("login", "Login"))
+        self.user_name.setText(_translate("login", "Username:"))
+        self.password.setText(_translate("login", "Password:"))
+        self.loginButton.setText(_translate("login", "Login"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    login = QtWidgets.QMainWindow()
+    ui = Ui_login()
+    ui.setupUi(login)
+    login.show()
     sys.exit(app.exec())
