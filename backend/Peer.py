@@ -18,12 +18,9 @@ import pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-SERVER_HOST = "26.75.111.47"
-SERVER_PORT = 43432
 
-HOST = socket.gethostbyname(socket.gethostname())  # change to your Local IP
-#HOST = "192.168.62.119"
-PORT = 12345
+
+
 
 DISCONNECT = "DISCONNECT"
 TRANSFER = "TRANSFER FILE"
@@ -43,9 +40,6 @@ def serialize(data):
     
     return pickle.dumps(data)
     
-
-
-
 def deserialize(data):
     # Input data is in byte format
     # Convert the data back to it format and return it
@@ -76,11 +70,16 @@ class Peer:
         self.OPEN_SERVER=False
         self.connect_To_MainServer()
         self.allowPath=[]
+        self.setHost()
+        self.setServerHost()
+    def setServerHost(self,host = socket.gethostbyname(socket.gethostname()),port = 54321):
+        self.SERVER_HOST = host  
+        self.SERVER_PORT = port   
         
     def connect_To_MainServer(self):
         try:
             self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.conn.connect((SERVER_HOST, SERVER_PORT)) # of server
+            self.conn.connect((self.SERVER_HOST, self.SERVER_PORT)) # of server
             print(f"Connection establishes")
         except:
             print(f"The server is offline")   
@@ -92,14 +91,14 @@ class Peer:
     def startServer(self):
         # This is the server on your computer that is responsible receiving the file
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((HOST, PORT))
+        self.server.bind((self.HOST, self.PORT))
         print("Starting your sharing server")        
         self.thread = threading.Thread(target=self.server_listener,name="Server listener thread")
         self.thread.start()
        
     def server_listener(self):
         self.server.listen(1)
-        print('Server(Peer) is listening on {}:{}'.format(HOST, PORT))
+        print('Server(Peer) is listening on {}:{}'.format(self.HOST, self.PORT))
         try:
             while True:
                 conn, addr = self.server.accept()
@@ -129,13 +128,13 @@ class Peer:
         # send PUBLISH
         # this just need to inform the server the file it has
         # and the addr this peer have open the server on
-        send_FORMAT(self.conn,((HOST, PORT),file_name))
+        send_FORMAT(self.conn,((self.HOST, self.PORT),file_name))
         self.allowPath.append(file_name)
     
     def send_UMPUBLISH(self,file_name):
         send_FORMAT(self.conn,UNPUBLISH)
         
-        send_FORMAT(self.conn,((HOST, PORT),file_name))
+        send_FORMAT(self.conn,((self.HOST, self.PORT),file_name))
         r = recv_FORMAT(self.conn)
         if r == SUCCESS:
             try:
@@ -154,7 +153,11 @@ class Peer:
         
         data = recv_FORMAT(self.conn)
         return data
-    #P2P Operation   
+    #P2P Operation
+    def setHost(self,host = socket.gethostbyname(socket.gethostname()),port = 12345):
+        self.HOST = host  
+        self.PORT = port   
+
     def send_file(self,conn,file_path):
         
         file_path = "./send/"+file_path

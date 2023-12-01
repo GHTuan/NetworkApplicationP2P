@@ -5,9 +5,7 @@ import json,pickle
 HEADER = 64
 FORMAT = 'utf-8'
 
-HOST = socket.gethostbyname(socket.gethostname())
-#HOST = "192.168.62.119"
-PORT = 43432
+
 
 save_path = "./auth_DATA.txt"
 
@@ -101,6 +99,7 @@ class auth_DATA:
     def __init__(self,path):
         self.path = path
         self.Data = {
+            #username : (password, active)
         }
         self.Data = self.load()
 
@@ -108,12 +107,12 @@ class auth_DATA:
         if username in self.Data:
             return "This user already exist"
         else:
-            self.Data[username] = password
+            self.Data[username] = (password,False)
             return "Succecfully added user"
     def auth(self,username,password):
         if username not in self.Data: 
             return "This user not exist"
-        elif password == self.Data[username]:
+        elif password == self.Data[username][0]:
             return "Login in success"
         else: return "Wrong password" 
     def save(self):
@@ -127,13 +126,26 @@ class auth_DATA:
                 return deserialize(data)  
             else:
                 return {}  
-    def get(self):
+    def get_active_user(self):
+        return {k: (i[0],i[1]) for k, i in self.Data.items() if i[1] == True}
+    def get_all(self):
         return self.Data
+    def toggle_user(self,username):
+        if username in self.Data:
+            current_tuple = self.Data[username]
+            updated_tuple = (current_tuple[0], not current_tuple[1])
+            self.Data[username] = updated_tuple
+    def rm_all(self):
+        self.Data = {}
         
 class Server:
     def __init__(self):
         self.file_Data = file_DATA()
-        self.auth_Data = auth_DATA(save_path)        
+        self.auth_Data = auth_DATA(save_path) 
+        self.setHost()
+    def setHOST(self,host = socket.gethostbyname(socket.gethostname()),port = 54321):
+        self.HOST = host
+        self.PORT = port
     def handle_connection(self,conn,addr):
         print (f"NEW CONNECTION {addr} connected.")
         connected = True
@@ -151,6 +163,7 @@ class Server:
             send_FORMAT(conn,r)
             if r == "Login in success" :
                 username = auth_info[0]
+                self.auth_Data.toggle_user(username)
                 break
         while connected: 
             try:
@@ -190,10 +203,11 @@ class Server:
         print(f"[{addr}] DISCONECTED")
         # delete the share file of that addr
         self.file_Data.rm_files_by_username(username)
+        self.auth_Data.toggle_user(username)
         conn.close()
     def start(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((HOST,PORT))
+        self.server.bind((self.HOST,self.PORT))
         
         self.thread = threading.Thread(target=self.server_listener,name="Server listener thread")
         self.thread.start()
@@ -201,7 +215,7 @@ class Server:
     def server_listener(self):
         # Start the server on a new thread 
         self.server.listen()
-        print(f"Listening at address {HOST}")
+        print(f"Listening at address {self.HOST} : {self.PORT}")
         try:
             while True:
                 conn, addr = self.server.accept()
@@ -255,7 +269,6 @@ server.shutdown()
 # print(auth_Data.reg("hello","hello"))
 # print(auth_Data.reg("admin","admin"))
 # print(auth_Data.reg("123","123"))
-# print(auth_Data.get())
 # auth_Data.save()
 
 # data = {('1.1.1.1', 6702): ('me', ['text.txt', 'text3.txt']), ('1.1.1.1', 6701): ('b', ['text2.txt', 'text.txt'])}
