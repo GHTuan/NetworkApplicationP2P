@@ -8,11 +8,13 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+
 class Ui_P2P_APP(object):
     def setupUi(self, P2P_APP):
         P2P_APP.setObjectName("P2P_APP")
         P2P_APP.resize(414, 392)
         P2P_APP.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        P2P_APP.setStyleSheet("background-color: rgb(193, 255, 216);")
         P2P_APP.setAnimated(True)
         self.centralwidget = QtWidgets.QWidget(parent=P2P_APP)
         self.centralwidget.setObjectName("centralwidget")
@@ -67,9 +69,6 @@ class Ui_P2P_APP(object):
 
         self.retranslateUi(P2P_APP)
         QtCore.QMetaObject.connectSlotsByName(P2P_APP)
-        
-        #connect function and button
-        
 
     def retranslateUi(self, P2P_APP):
         _translate = QtCore.QCoreApplication.translate

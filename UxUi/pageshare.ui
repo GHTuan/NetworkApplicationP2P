@@ -16,6 +16,9 @@
   <property name="windowTitle">
    <string>ShareFile</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(193, 255, 216);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="header_2">
     <property name="geometry">
@@ -88,6 +91,9 @@
     </property>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-color: rgb(0, 0, 127);</string>
     </property>
     <property name="text">
      <string>SHARE</string>
