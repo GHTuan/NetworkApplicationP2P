@@ -10,8 +10,8 @@ app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 table_window = table.TableWindow()
 
-USER = 123
-PASS = 123
+USER = "123"
+PASS = "123"
 
 def loginUi():
     global ui
@@ -19,14 +19,15 @@ def loginUi():
     ui.setupUi(MainWindow)
     username = ui.username_input.text()
     passwork = ui.password_input.text()
-    ui.loginButton.clicked.connect(homeUi)
-    # if username == USER and passwork == PASS:
-    #     ui.loginButton.clicked.connect(homeUi)
-    #     print("login success!")
-    # else:
-    #     print ("login fail! Please login again!")
-    MainWindow.show()
-    
+    notLog = True #chưa đăng nhập =true
+    while notLog:
+        if p.login(username,passwork) == "Login in success":
+            ui.loginButton.clicked.connect(homeUi)
+            notLog = False
+        else:
+            notLog = True   
+            print("Login Fail! Login again!") 
+    MainWindow.show()            
 
 def homeUi():
     global ui
@@ -83,7 +84,7 @@ def TableUi():
     
 #runapp
 
-# p = Peer()
+p = Peer()
 # p.login("123","123")
 loginUi()
 sys.exit(app.exec())
